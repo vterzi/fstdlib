@@ -1,3 +1,5 @@
+! Kinds of basic types as parameters
+
 module stdlib_kinds
     use, intrinsic :: ISO_FORTRAN_ENV, only: &
         INT8, INT16, INT32, INT64, &
@@ -17,6 +19,8 @@ module stdlib_kinds
     implicit none
 
     integer, parameter :: &
+        ! logical, integer
+        ! K = kind
         K1 = SELECTED_INT_KIND(2), &
         K2 = SELECTED_INT_KIND(4), &
         K4 = SELECTED_INT_KIND(9), &
@@ -24,21 +28,25 @@ module stdlib_kinds
 #ifdef _K16
         K16 = SELECTED_INT_KIND(38), &
 #endif
-        SP = SELECTED_REAL_KIND(6), &
-        DP = SELECTED_REAL_KIND(15), &
+        ! real, complex
+        ! P = precision
+        SP = SELECTED_REAL_KIND(6), &  ! single
+        DP = SELECTED_REAL_KIND(15), &  ! double
 #ifdef _XDP
-        XDP = SELECTED_REAL_KIND(18), &
+        XDP = SELECTED_REAL_KIND(18), &  ! extended double
 #endif
 #ifdef _QP
-        QP = SELECTED_REAL_KIND(33), &
+        QP = SELECTED_REAL_KIND(33), &  ! quadruple
 #endif
+        ! character
         ASCII = SELECTED_CHAR_KIND('ASCII'), &
 #ifdef _UCS4
         UCS4 = SELECTED_CHAR_KIND('ISO_10646'), &
 #endif
-        LK = KIND(.false.), &
-        IK = KIND(0), &
-        RK = KIND(0.), &
-        CK = RK, &
-        SK = KIND('')
+        ! default kinds
+        LK = KIND(.false.), &  ! logical
+        IK = KIND(0), &  ! integer
+        RK = KIND(0.), &  ! real
+        CK = RK, &  ! complex
+        SK = KIND('')  ! character
 end module stdlib_kinds

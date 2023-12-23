@@ -1,3 +1,5 @@
+! ASCII characters
+
 module stdlib_ascii
     use, intrinsic :: ISO_C_BINDING, only: C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, C_VERTICAL_TAB, &
         C_FORM_FEED, C_CARRIAGE_RETURN
