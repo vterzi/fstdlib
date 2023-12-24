@@ -1,6 +1,6 @@
 program kinds
     implicit none
-    
+
     integer :: i, k, sk
     character(len=3) :: c
 
@@ -37,16 +37,16 @@ program kinds
         if (sk /= k) then
             select case (i - 1)
             case (3)
-                c = 'HP' 
+                c = 'HP'
             case (6)
-                c = 'SP' 
+                c = 'SP'
             case (15)
-                c = 'DP' 
+                c = 'DP'
             case (18)
-                c = 'XDP' 
+                c = 'XDP'
             case (31, 33)
                 c = 'QP'
-            case default 
+            case default
                 c = '???'
             end select
             print *, c, k
@@ -66,7 +66,7 @@ program kinds
 
     print *, 'Defalut kinds:'
     print *, 'LOGICAL  ', KIND(.false.)
-    print *, 'INTEGER  ', KIND(0)   
+    print *, 'INTEGER  ', KIND(0)
     print *, 'REAL     ', KIND(0.)
     print *, 'COMPLEX  ', KIND((0., 0.))
     print *, 'CHARACTER', KIND('')
