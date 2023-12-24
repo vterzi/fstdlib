@@ -1,14 +1,16 @@
 program kinds
     implicit none
 
-    integer :: i, k, sk
+    integer :: i, k, sk, mk
     character(len=3) :: c
 
+    mk = 0
+
     print *, 'INTEGER kinds:'
-    k = SELECTED_INT_KIND(1)
-    do i = 2, 64
+    k = 0
+    do i = 1, 64
         sk = SELECTED_INT_KIND(i)
-        if (sk /= k) then
+        if (i > 1 .and. sk /= k) then
             select case (i - 1)
             case (2)
                 c = 'K1'
@@ -24,17 +26,18 @@ program kinds
                 c = '???'
             end select
             print *, c, k
-            k = sk
         end if
+        k = sk
+        mk = MAX(mk, k)
     end do
 
     print *, ''
 
     print *, 'REAL kinds:'
-    k = SELECTED_REAL_KIND(1)
-    do i = 2, 64
+    k = 0
+    do i = 1, 64
         sk = SELECTED_REAL_KIND(i)
-        if (sk /= k) then
+        if (i > 1 .and. sk /= k) then
             select case (i - 1)
             case (3)
                 c = 'HP'
@@ -50,17 +53,20 @@ program kinds
                 c = '???'
             end select
             print *, c, k
-            k = sk
         end if
+        k = sk
+        mk = MAX(mk, k)
     end do
 
     print *, ''
 
     print *, 'CHARACTER kinds:'
     k = SELECTED_CHAR_KIND('ASCII')
-    if (k /= -1) print *, 'ASCII', k
+    if (k > 0) print *, 'ASCII', k
+    mk = MAX(mk, k)
     k = SELECTED_CHAR_KIND('ISO_10646')
-    if (k /= -1) print *, 'UCS4 ', k
+    if (k > 0) print *, 'UCS4 ', k
+    mk = MAX(mk, k)
 
     print *, ''
 
@@ -70,4 +76,8 @@ program kinds
     print *, 'REAL     ', KIND(0.)
     print *, 'COMPLEX  ', KIND((0., 0.))
     print *, 'CHARACTER', KIND('')
+
+    print *, ''
+
+    print *, 'Maximum kind:', mk
 end program kinds
