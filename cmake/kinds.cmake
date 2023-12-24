@@ -1,33 +1,29 @@
-include(CheckFortranSourceRuns)
-
-check_fortran_source_runs(
-        "if (SELECTED_INT_KIND(38) == -1) stop 1; end"
-        _K16
+try_run(run_result compile_result
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/cmake/kinds.f90
+    RUN_OUTPUT_VARIABLE output
 )
-if(_K16)
-    add_definitions(-D_K16)
-endif()
 
-check_fortran_source_runs(
-        "if (ANY(SELECTED_REAL_KIND(18) == [-1, SELECTED_REAL_KIND(33)])) stop 1; end"
-        _XDP
-)
-if(_XDP)
-    add_definitions(-D_XDP)
-endif()
+function (add_kind label)
+    string(REGEX MATCH "${label} +([0-9]+)" match ${output})
+    if (NOT ${match} STREQUAL "")
+        add_compile_definitions("_${label}=${CMAKE_MATCH_1}")
+    endif ()
+endfunction ()
 
-check_fortran_source_runs(
-        "if (SELECTED_REAL_KIND(33) == -1) stop 1; end"
-        _QP
-)
-if(_QP)
-    add_definitions(-D_QP)
-endif()
-
-check_fortran_source_runs(
-        "if (SELECTED_CHAR_KIND('ISO_10646') == -1) stop 1; end"
-        _UCS4
-)
-if(_UCS4)
-    add_definitions(-D_UCS4)
-endif()
+if (${run_result} EQUAL 0)
+    add_kind("K1")
+    add_kind("K2")
+    add_kind("K4")
+    add_kind("K8")
+    add_kind("K16")
+    add_kind("HP")
+    add_kind("SP")
+    add_kind("DP")
+    add_kind("XDP")
+    add_kind("QP")
+    add_kind("ASCII")
+    add_kind("UCS4")
+else ()
+    message(FATAL_ERROR "Failed to determine available kinds of basic data types")
+endif ()
