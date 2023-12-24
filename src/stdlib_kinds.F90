@@ -1,4 +1,4 @@
-! Kinds of basic types as parameters
+! Kinds of basic data types as parameters
 
 module stdlib_kinds
     use, intrinsic :: ISO_FORTRAN_ENV, only: &
@@ -30,6 +30,9 @@ module stdlib_kinds
 #endif
         ! real, complex
         ! P = precision
+#ifdef _HP
+        HP = SELECTED_REAL_KIND(3), &  ! half
+#endif
         SP = SELECTED_REAL_KIND(6), &  ! single
         DP = SELECTED_REAL_KIND(15), &  ! double
 #ifdef _XDP
