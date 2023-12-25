@@ -18,35 +18,50 @@ module stdlib_kinds
 
     implicit none
 
-    integer, parameter :: &
-        ! logical, integer
-        ! K = kind
-        K1 = SELECTED_INT_KIND(2), &
-        K2 = SELECTED_INT_KIND(4), &
-        K4 = SELECTED_INT_KIND(9), &
-        K8 = SELECTED_INT_KIND(18), &
+    ! logical, integer (K = kind)
+#ifdef _K1
+    integer, parameter :: K1 = SELECTED_INT_KIND(2)
+#endif
+#ifdef _K2
+    integer, parameter :: K2 = SELECTED_INT_KIND(4)
+#endif
+#ifdef _K4
+    integer, parameter :: K4 = SELECTED_INT_KIND(9)
+#endif
+#ifdef _K8
+    integer, parameter :: K8 = SELECTED_INT_KIND(18)
+#endif
 #ifdef _K16
-        K16 = SELECTED_INT_KIND(38), &
+    integer, parameter :: K16 = SELECTED_INT_KIND(38)
 #endif
-        ! real, complex
-        ! P = precision
+
+    ! real, complex (P = precision)
 #ifdef _HP
-        HP = SELECTED_REAL_KIND(3), &  ! half
+    integer, parameter :: HP = SELECTED_REAL_KIND(3)  ! half
 #endif
-        SP = SELECTED_REAL_KIND(6), &  ! single
-        DP = SELECTED_REAL_KIND(15), &  ! double
+#ifdef _SP
+    integer, parameter :: SP = SELECTED_REAL_KIND(6)  ! single
+#endif
+#ifdef _DP
+    integer, parameter :: DP = SELECTED_REAL_KIND(15)  ! double
+#endif
 #ifdef _XDP
-        XDP = SELECTED_REAL_KIND(18), &  ! extended double
+    integer, parameter :: XDP = SELECTED_REAL_KIND(18)  ! extended double
 #endif
 #ifdef _QP
-        QP = SELECTED_REAL_KIND(33), &  ! quadruple
+    integer, parameter :: QP = SELECTED_REAL_KIND(33)  ! quadruple
 #endif
-        ! character
-        ASCII = SELECTED_CHAR_KIND('ASCII'), &
+
+    ! character
+#ifdef _ASCII
+    integer, parameter :: ASCII = SELECTED_CHAR_KIND('ASCII')
+#endif
 #ifdef _UCS4
-        UCS4 = SELECTED_CHAR_KIND('ISO_10646'), &
+    integer, parameter :: UCS4 = SELECTED_CHAR_KIND('ISO_10646')
 #endif
-        ! default kinds
+
+    ! default kinds
+    integer, parameter :: &
         LK = KIND(.false.), &  ! logical
         IK = KIND(0), &  ! integer
         RK = KIND(0.), &  ! real
