@@ -1,5 +1,5 @@
 try_run(run_result compile_result
-    ${CMAKE_BINARY_DIR}
+    ${PROJECT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}/cmake/kinds.f90
     RUN_OUTPUT_VARIABLE output
 )
