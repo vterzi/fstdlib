@@ -5,9 +5,10 @@ try_run(run_result compile_result
 )
 
 function (add_kind label)
-    string(REGEX MATCH "${label} +([0-9]+)" match ${output})
+    string(REGEX MATCH "${label} +([0-9]+) +([^ \n]+)" match ${output})
     if (NOT ${match} STREQUAL "")
         add_compile_definitions("_${label}=${CMAKE_MATCH_1}")
+        add_compile_definitions("_${label}_ARG=${CMAKE_MATCH_2}")
     endif ()
 endfunction ()
 

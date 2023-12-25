@@ -25,7 +25,7 @@ program kinds
             case default
                 c = '???'
             end select
-            print *, c, k
+            print *, c, k, i - 1
         end if
         k = sk
         mk = MAX(mk, k)
@@ -52,7 +52,7 @@ program kinds
             case default
                 c = '???'
             end select
-            print *, c, k
+            print *, c, k, i - 1
         end if
         k = sk
         mk = MAX(mk, k)
@@ -62,10 +62,10 @@ program kinds
 
     print *, 'CHARACTER kinds:'
     k = SELECTED_CHAR_KIND('ASCII')
-    if (k > 0) print *, 'ASCII', k
+    if (k > 0) print *, 'ASCII', k, '"ASCII"'
     mk = MAX(mk, k)
     k = SELECTED_CHAR_KIND('ISO_10646')
-    if (k > 0) print *, 'UCS4 ', k
+    if (k > 0) print *, 'UCS4 ', k, '"ISO_10646"'
     mk = MAX(mk, k)
 
     print *, ''
