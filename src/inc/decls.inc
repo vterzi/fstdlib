@@ -3,7 +3,7 @@
 ! {_DECL_TWO} + (_ID1, _ID2, $1<1>, $1<2>, $1<>) -(_DECL, _CLASS, $1<>, _KIND_LABEL)> ("id.inc")
 ! Add the declaration line `_DECL_ONE(<kind_label>)` for all kinds of one basic data type `_ID` or add the declaration line
 ! `_DECL_TWO(<kind_label_1>,<kind_label_2>)` for all kinds of two basic data types `_ID1` and `_ID2`.  If `_DEFAULT_ONLY?` is
-! defined, only the line for the default kind of the corresponding type is added. If `_DEFAULT?` is defined, the line for the
+! defined, the line is added only for the default kind of the corresponding type. If `_DEFAULT?` is defined, the line for the
 ! default kind of the corresponding type is additionally added.
 
 #include "../inc/id.inc"
