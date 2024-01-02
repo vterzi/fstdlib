@@ -1,11 +1,12 @@
 ! $1 = (_LOGICAL, _INTEGER, _REAL, _COMPLEX, _CHARACTER, _CLASS_K, _CLASS_P, _CLASS_S)
 ! $2<?> = (_CLASS?, _TYPE?, _KIND?, _VAR_TYPE?, _ARG_TYPE?, _RES_TYPE?, _TYPE_LEN?, _TYPE_NAME?, _TYPE_LABEL?, _KIND_LABEL?,
 !   _LABEL?, [_NUMBER?])
-! (_ID) -(_DIFF)> ("cat.inc", $1, $2<>, _N_IDS)
-! (_ID1, _ID2) -(_DIFF)> ("cat.inc", $1, $2<1>, $2<2>, $2<>, _N_IDS)
+! {_KEEP_ARGS} + (_ID) -(_DIFF)> ("cat.inc", [_ID], $1, $2<>, _N_IDS)
+! {_KEEP_ARGS} + (_ID1, _ID2) -(_DIFF)> ("cat.inc", [_ID1], [_ID2], $1, $2<1>, $2<2>, $2<0>, _N_IDS)
 ! Determine information about either one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a
 ! type (`_LOGICAL`, `_INTEGER`, `_REAL`, `_COMPLEX`, `_CHARACTER`) and a kind (`_K1`, `_K2`, `_K4`, `_K16`, `_HP`, `_SP`, `_DP`,
-! `_XDP`, `_QP`, `_ASCII`, `_UCS4`) value.  The number of arguments is saved in `_N_IDS`.  The resulting informations are:
+! `_XDP`, `_QP`, `_ASCII`, `_UCS4`) value.  The number of arguments is saved in `_N_IDS`.  If `_KEEP_ARGS` is defined, the arguments
+! are not undefined at the end of the file.  The resulting informations are:
 !   * `_CLASS?`: kind class of the type (`_CLASS_K` for logical or integer, `_CLASS_P` for real or complex, `_CLASS_S` for
 !     character),
 !   * `_TYPE?`: the type value,
@@ -19,8 +20,8 @@
 !   * `_KIND_LABEL?`: the label of the kind,
 !   * `_LABEL?`: the label of the type and the kind.
 !   * `_NUMBER?`: a defined variable if the type is a number type,
-! In the case of two arguments, the information of the larger type and kind (larger value of `_ID?`) is copied to variables without
-! a number label ($2<>).
+! In the case of two arguments, the information of the larger type and kind (larger value of `_ID?`) is copied to variables with
+! the label `0` ($2<0>).
 !   * `_LOGICAL < _INTEGER < _REAL < _COMPLEX < _CHARACTER`,
 !   * `_K1 < _K2 < _K4 < _K8 < _K16`,
 !   * `_HP < _SP < _DP < _XDP < _QP`,
@@ -260,74 +261,54 @@
 #    define _TYPE_LEN2(X) _VAR_TYPE2
 #  endif
 #  undef _DIFF
-#  undef _TYPE_NAME
-#  undef _CLASS
-#  undef _KIND
-#  undef _VAR_TYPE
-#  undef _ARG_TYPE
-#  undef _RES_TYPE
-#  undef _TYPE_LEN
-#  undef _TYPE_LABEL
-#  undef _KIND_LABEL
-#  undef _LABEL
-#  undef _NUMBER
+#  undef _TYPE_NAME0
+#  undef _CLASS0
+#  undef _KIND0
+#  undef _VAR_TYPE0
+#  undef _ARG_TYPE0
+#  undef _RES_TYPE0
+#  undef _TYPE_LEN0
+#  undef _TYPE_LABEL0
+#  undef _KIND_LABEL0
+#  undef _LABEL0
+#  undef _NUMBER0
 #  if _ID1 >= _ID2
-#    define _TYPE_NAME _TYPE_NAME1
-#    undef _TYPE
-#    define _TYPE _TYPE1
-#    define _CLASS _CLASS1
+#    define _TYPE_NAME0 _TYPE_NAME1
+#    undef _TYPE0
+#    define _TYPE0 _TYPE1
+#    define _CLASS0 _CLASS1
 #    ifdef _KIND1
-#      define _KIND _KIND1
+#      define _KIND0 _KIND1
 #    endif
-#    define _VAR_TYPE _VAR_TYPE1
-#    define _ARG_TYPE _ARG_TYPE1
-#    define _RES_TYPE _RES_TYPE1
-#    define _TYPE_LEN _TYPE_LEN1
-#    define _TYPE_LABEL _TYPE_LABEL1
-#    define _KIND_LABEL _KIND_LABEL1
-#    define _LABEL _LABEL1
+#    define _VAR_TYPE0 _VAR_TYPE1
+#    define _ARG_TYPE0 _ARG_TYPE1
+#    define _RES_TYPE0 _RES_TYPE1
+#    define _TYPE_LEN0 _TYPE_LEN1
+#    define _TYPE_LABEL0 _TYPE_LABEL1
+#    define _KIND_LABEL0 _KIND_LABEL1
+#    define _LABEL0 _LABEL1
 #  else
-#    define _TYPE_NAME _TYPE_NAME2
-#    undef _TYPE
-#    define _TYPE _TYPE2
-#    define _CLASS _CLASS2
+#    define _TYPE_NAME0 _TYPE_NAME2
+#    undef _TYPE0
+#    define _TYPE0 _TYPE2
+#    define _CLASS0 _CLASS2
 #    ifdef _KIND2
-#      define _KIND _KIND2
+#      define _KIND0 _KIND2
 #    endif
-#    define _VAR_TYPE _VAR_TYPE2
-#    define _ARG_TYPE _ARG_TYPE2
-#    define _RES_TYPE _RES_TYPE2
-#    define _TYPE_LEN _TYPE_LEN2
-#    define _TYPE_LABEL _TYPE_LABEL2
-#    define _KIND_LABEL _KIND_LABEL2
-#    define _LABEL _LABEL2
+#    define _VAR_TYPE0 _VAR_TYPE2
+#    define _ARG_TYPE0 _ARG_TYPE2
+#    define _RES_TYPE0 _RES_TYPE2
+#    define _TYPE_LEN0 _TYPE_LEN2
+#    define _TYPE_LABEL0 _TYPE_LABEL2
+#    define _KIND_LABEL0 _KIND_LABEL2
+#    define _LABEL0 _LABEL2
 #  endif
-#  undef _ID1
-#  undef _ID2
+#  ifndef _KEEP_ARGS
+#    undef _ID1
+#    undef _ID2
+#  endif
 #elif defined(_ID)
 #  define _N_IDS 1
-#  undef _TYPE_NAME1
-#  undef _CLASS1
-#  undef _KIND1
-#  undef _VAR_TYPE1
-#  undef _ARG_TYPE1
-#  undef _RES_TYPE1
-#  undef _TYPE_LEN1
-#  undef _TYPE_LABEL1
-#  undef _KIND_LABEL1
-#  undef _LABEL1
-#  undef _NUMBER1
-#  undef _TYPE_NAME2
-#  undef _CLASS2
-#  undef _KIND2
-#  undef _VAR_TYPE2
-#  undef _ARG_TYPE2
-#  undef _RES_TYPE2
-#  undef _TYPE_LEN2
-#  undef _TYPE_LABEL2
-#  undef _KIND_LABEL2
-#  undef _LABEL2
-#  undef _NUMBER2
 #  undef _TYPE_NAME
 #  undef _CLASS
 #  undef _KIND
@@ -434,7 +415,9 @@
 #    define _TYPE_LEN(X) _VAR_TYPE
 #  endif
 #  undef _DIFF
-#  undef _ID
+#  ifndef _KEEP_ARGS
+#    undef _ID
+#  endif
 #else
 #  error Two arguments `_ID1` and `_ID2` or one argument `_ID` required
 #endif
