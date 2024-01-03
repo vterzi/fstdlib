@@ -7,11 +7,11 @@ module stdlib_base
     private
     public :: &
         operator(==), operator(/=), operator(//), operator(+), operator(*), &
-        Swap, Sort, Sorted, &
-        Strip, IsDigit, IsUpper, IsLower, IsLetter, Upper, Lower, ToCharacter, &
-        GetCmd, GetCmdArg, GetEnv
+        swap, sort, sorted, &
+        strip, isdigit, isupper, islower, isletter, upper, lower, to_character, &
+        getcmd, getcmdarg, getenv
 
-#define _DECL(X) public :: _CAT3(To,_TYPE_NAME,X)
+#define _DECL(X) public :: _CAT3(to_,_TYPE_NAME,X)
 #define _ID _LOGICAL
 #define _DEFAULT
 #include "../inc/decl.inc"
@@ -36,7 +36,7 @@ module stdlib_base
 #define _DECL_ONE(X) module procedure :: _UNARY(X)
 #define _DECL_TWO(X,Y) module procedure :: _BINARY(X,Y)
 
-#define _OP EQ
+#define _OP eq
     interface operator(._OP.)
 #define _ID1 _LOGICAL
 #define _ID2 _LOGICAL
@@ -44,7 +44,7 @@ module stdlib_base
     end interface
 #undef _OP
 
-#define _OP NE
+#define _OP ne
     interface operator(._OP.)
 #define _ID1 _LOGICAL
 #define _ID2 _LOGICAL
@@ -52,7 +52,7 @@ module stdlib_base
     end interface
 #undef _OP
 
-#define _OP ToCharacter
+#define _OP to_character
     interface _OP
 #define _ID _LOGICAL
 #include "../inc/decls.inc"
@@ -67,7 +67,7 @@ module stdlib_base
     end interface _OP
 #undef _OP
 
-#define _OP Cat
+#define _OP cat
     interface operator(+)
 #define _ID _CHARACTER
 #include "../inc/decls.inc"
@@ -140,7 +140,7 @@ module stdlib_base
     end interface
 #undef _OP
 
-#define _OP Mul
+#define _OP mul
     interface operator(*)
 #define _ID1 _INTEGER
 #define _ID2 _CHARACTER
@@ -151,7 +151,7 @@ module stdlib_base
     end interface
 #undef _OP
 
-#define _OP Swap
+#define _OP swap
     interface _OP
 #define _ID _LOGICAL
 #include "../inc/decls.inc"
@@ -166,8 +166,8 @@ module stdlib_base
     end interface _OP
 #undef _OP
 
-#define _OP Sort
-    interface Sort
+#define _OP sort
+    interface sort
 #define _ID _INTEGER
 #include "../inc/decls.inc"
 #define _ID _REAL
@@ -177,7 +177,7 @@ module stdlib_base
     end interface _OP
 #undef _OP
 
-#define _OP Sorted
+#define _OP sorted
     interface _OP
 #define _ID _INTEGER
 #include "../inc/decls.inc"
@@ -278,47 +278,47 @@ contains
 #include "../inc/defs.inc"
 #undef _FILE
 
-    pure function Strip(arg) result(res)
+    pure function strip(arg) result(res)
         character(len=*), intent(in) :: arg
         character(len=:), allocatable :: res
 
         res = TRIM(ADJUSTL(arg))
-    end function Strip
+    end function strip
 
 
-    elemental function IsDigit(arg) result(res)
+    elemental function isdigit(arg) result(res)
         character(len=1), intent(in) :: arg
         logical :: res
 
         res = DIGITS(:1) <= arg .and. arg <= DIGITS(LEN(DIGITS):)
-    end function IsDigit
+    end function isdigit
 
 
-    elemental function IsUpper(arg) result(res)
+    elemental function isupper(arg) result(res)
         character(len=1), intent(in) :: arg
         logical :: res
 
         res = UPPERCASE(:1) <= arg .and. arg <= UPPERCASE(LEN(UPPERCASE):)
-    end function IsUpper
+    end function isupper
 
 
-    elemental function IsLower(arg) result(res)
+    elemental function islower(arg) result(res)
         character(len=1), intent(in) :: arg
         logical :: res
 
         res = LOWERCASE(:1) <= arg .and. arg <= LOWERCASE(LEN(LOWERCASE):)
-    end function IsLower
+    end function islower
 
 
-    elemental function IsLetter(arg) result(res)
+    elemental function isletter(arg) result(res)
         character(len=1), intent(in) :: arg
         logical :: res
 
-        res = IsUpper(arg) .or. IsLower(arg)
-    end function IsLetter
+        res = isupper(arg) .or. islower(arg)
+    end function isletter
 
 
-    elemental function Upper(arg) result(res)
+    elemental function upper(arg) result(res)
         character(len=*), intent(in) :: arg
         character(len=LEN(arg)) :: res
 
@@ -328,12 +328,12 @@ contains
         res = arg
         do i = 1, LEN(res)
             symbol = res(i:i)
-            if (IsLower(symbol)) res(i:i) = ACHAR(IACHAR(symbol) - LETTER_SHIFT)
+            if (islower(symbol)) res(i:i) = ACHAR(IACHAR(symbol) - LETTER_SHIFT)
         end do
-    end function Upper
+    end function upper
 
 
-    elemental function Lower(arg) result(res)
+    elemental function lower(arg) result(res)
         character(len=*), intent(in) :: arg
         character(len=LEN(arg)) :: res
 
@@ -343,12 +343,12 @@ contains
         res = arg
         do i = 1, LEN(res)
             symbol = res(i:i)
-            if (IsUpper(symbol)) res(i:i) = ACHAR(IACHAR(symbol) + LETTER_SHIFT)
+            if (isupper(symbol)) res(i:i) = ACHAR(IACHAR(symbol) + LETTER_SHIFT)
         end do
-    end function Lower
+    end function lower
 
 
-    function GetCmd(success) result(val)
+    function getcmd(success) result(val)
         logical, intent(out), optional :: success
         character(len=:), allocatable :: val
 
@@ -358,10 +358,10 @@ contains
         allocate(character(len=length) :: val)
         call GET_COMMAND(val, status=status)
         if (PRESENT(success)) success = status == 0
-    end function GetCmd
+    end function getcmd
 
 
-    function GetCmdArg(number, success) result(val)
+    function getcmdarg(number, success) result(val)
         integer, intent(in) :: number
         logical, intent(out), optional :: success
         character(len=:), allocatable :: val
@@ -372,10 +372,10 @@ contains
         allocate(character(len=length) :: val)
         call GET_COMMAND_ARGUMENT(number, val, status=status)
         if (PRESENT(success)) success = status == 0
-    end function GetCmdArg
+    end function getcmdarg
 
 
-    function GetEnv(name, success) result(val)
+    function getenv(name, success) result(val)
         character(len=*), intent(in) :: name
         logical, intent(out), optional :: success
         character(len=:), allocatable :: val
@@ -386,5 +386,5 @@ contains
         allocate(character(len=length) :: val)
         call GET_ENVIRONMENT_VARIABLE(name, val, status=status)
         if (PRESENT(success)) success = status == 0
-    end function GetEnv
+    end function getenv
 end module stdlib_base

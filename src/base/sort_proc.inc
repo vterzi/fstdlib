@@ -17,7 +17,7 @@ pure recursive subroutine _SUBPROC(array)
     if (length <= SIMPLE_SORT_SIZE) then  ! interchange sort
         do low = 1, length - 1
             do high = low + 1, length
-                if (array(low) _OP1 array(high)) call Swap(array(low), array(high))
+                if (array(low) _OP1 array(high)) call swap(array(low), array(high))
             end do
         end do
     else  ! quick sort (Hoare partition scheme)
@@ -34,7 +34,7 @@ pure recursive subroutine _SUBPROC(array)
                 if (array(high) _OP2= pivot) exit
             end do
             if (low < high) then
-                call Swap(array(low), array(high))
+                call swap(array(low), array(high))
             else if (low == high) then
                 low = low + 1
                 exit

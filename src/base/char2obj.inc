@@ -1,4 +1,4 @@
-#define _PROC0 _CAT(To,_TYPE_NAME)
+#define _PROC0 _CAT(to_,_TYPE_NAME)
 #ifdef _KIND
 #  define _PROC _CAT(_PROC0,_KIND)
 #else

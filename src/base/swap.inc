@@ -1,4 +1,4 @@
-#define _PROC _CAT(Swap_,_LABEL)
+#define _PROC _CAT(swap_,_LABEL)
 elemental subroutine _PROC(arg1, arg2)
     _ARG_TYPE, intent(inout) :: arg1, arg2
 
