@@ -1,10 +1,6 @@
 ! Kinds of basic data types as parameters
 
 module stdlib_kinds
-    use, intrinsic :: ISO_FORTRAN_ENV, only: &
-        INT8, INT16, INT32, INT64, &
-        REAL32, REAL64, REAL128, &
-        LOGICAL_KINDS, INTEGER_KINDS, REAL_KINDS, CHARACTER_KINDS
     use, intrinsic :: ISO_C_BINDING, only: &
         C_BOOL, &
         C_SIGNED_CHAR, C_SHORT, C_INT, C_LONG, C_LONG_LONG, C_SIZE_T, &
