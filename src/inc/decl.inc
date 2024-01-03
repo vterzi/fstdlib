@@ -1,10 +1,9 @@
-! $1 = ([_DEFAULT_ONLY | _DEFAULT])
+! $1 = ([_DEFAULT | _DEFAULT_ONLY])
 ! {_DECL(?)} + (_ID, $1) -(_UNDEF_ARGS)> ("id.inc")
-! {_DECL(?)} + ("id.inc", $1) -(_UNDEF_ARGS)> ("id.inc", $1)
-! Add the declaration line `_DECL(<kind_label>)` for all kinds of the basic data type `_ID`.  If `_DEFAULT_ONLY` is defined, the
-! line is added only for the default kind.  If `_DEFAULT` is defined, the line for the default kind is additionally added.  If
-! "id.inc" is included beforehand, the argument `_ID` must be omitted.  In this case, the arguments `_DEFAULT_ONLY` and `_DEFAULT`
-! are not undefined at the end of the file.
+! {_DECL(?), "id.inc", $1} + () -(_UNDEF_ARGS)> ()
+! Add the declaration line `_DECL(<kind_label>)` for all kinds of the basic data type `_ID`.  If `_DEFAULT` is defined, the line for
+! the default kind is additionally added.  If `_DEFAULT_ONLY` is defined, the line is added only for the default kind.  If "id.inc"
+! is included beforehand, the argument `_ID` must be omitted.
 
 #ifndef _DECL
 #  error The argument `_DECL(<kind_label>)` required

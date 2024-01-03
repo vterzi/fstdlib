@@ -1,9 +1,9 @@
-! $1<?> = ([_DEFAULT_ONLY? | _DEFAULT?])
+! $1<?> = ([_DEFAULT? | _DEFAULT_ONLY?])
 ! {_FILE} + (_ID, $1<>) -> ("id.inc", "def.inc")
 ! {_FILE} + (_ID1, _ID2, $1<1>, $1<2>, $1<>) -(_CLASS, _TYPE, _KEEP_ARGS)> ("id.inc", "def.inc")
 ! Include the contents of the file `_FILE` for all kinds of one basic data type `_ID` or for all kinds of two basic data types
-! `_ID1` and `_ID2`.  If `_DEFAULT_ONLY?` is defined, the file is included only for the default kind of the corresponding type. If
-! `_DEFAULT?` is defined, the file for the default kind of the corresponding type is additionally included.
+! `_ID1` and `_ID2`.  If `_DEFAULT?` is defined, the file for the default kind of the corresponding type is additionally included.
+! If `_DEFAULT_ONLY?` is defined, the file is included only for the default kind of the corresponding type.
 
 #include "../inc/id.inc"
 

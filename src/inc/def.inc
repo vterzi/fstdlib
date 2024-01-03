@@ -1,10 +1,9 @@
-! $1 = ([_DEFAULT_ONLY | _DEFAULT])
+! $1 = ([_DEFAULT | _DEFAULT_ONLY])
 ! {_FILE} + (_ID, $1) -(_UNDEF_ARGS)> ("id.inc")
-! {_FILE} + ("id.inc", $1) -(_UNDEF_ARGS)> ("id.inc", $1)
-! Include the contents of the file `_FILE` for all kinds of one basic data type `_ID`.  If `_DEFAULT_ONLY` is defined, the file is
-! included only for the default kind.  If `_DEFAULT` is defined, the file for the default kind is additionally included.  If
-! "id.inc" is included beforehand, the argument `_ID` must be omitted.  In this case, the arguments `_DEFAULT_ONLY` and `_DEFAULT`
-! are not undefined at the end of the file.
+! {_FILE, "id.inc", $1} + () -(_UNDEF_ARGS, _ID)> ()
+! Include the contents of the file `_FILE` for all kinds of the basic data type `_ID`.  If `_DEFAULT` is defined, the file for the
+! default kind is additionally included.  If `_DEFAULT_ONLY` is defined, the file is included only for the default kind.  If
+! "id.inc" is included beforehand, the argument `_ID` must be omitted.
 
 #ifndef _FILE
 #  error The argument `_FILE` required

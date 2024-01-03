@@ -1,3 +1,7 @@
+! {"id.inc", _OP} + () -> ("cat.inc", _UNARY, _BINARY)
+! Define the macros to construct procedure names, `_UNARY(<kind_label>)` and `_BINARY(<kind_label_1>,<kind_label_2>)`, for the
+! operator `_OP`.
+
 #include "../inc/cat.inc"
 
 #undef _UNARY

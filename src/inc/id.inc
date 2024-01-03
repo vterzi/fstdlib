@@ -3,11 +3,11 @@
 !   _LABEL?, [_NUMBER?])
 ! {_KEEP_ARGS} + (_ID) -(_DIFF)> ("cat.inc", [_ID], $1, $2<>, _N_IDS)
 ! {_KEEP_ARGS} + (_ID1, _ID2) -(_DIFF)> ("cat.inc", [_ID1], [_ID2], $1, $2<1>, $2<2>, $2<0>, _N_IDS)
-! Determine information about either one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a
-! type (`_LOGICAL`, `_INTEGER`, `_REAL`, `_COMPLEX`, `_CHARACTER`) and a kind (`_K1`, `_K2`, `_K4`, `_K16`, `_HP`, `_SP`, `_DP`,
-! `_XDP`, `_QP`, `_ASCII`, `_UCS4`) value.  The number of arguments is saved in `_N_IDS`.  If `_KEEP_ARGS` is defined, the arguments
-! are not undefined at the end of the file.  The resulting informations are:
-!   * `_CLASS?`: kind class of the type (`_CLASS_K` for logical or integer, `_CLASS_P` for real or complex, `_CLASS_S` for
+! Determine information about one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a type
+! value (`_LOGICAL`, `_INTEGER`, `_REAL`, `_COMPLEX`, `_CHARACTER`) and a kind value (`_K1`, `_K2`, `_K4`, `_K16`, `_HP`, `_SP`,
+! `_DP`, `_XDP`, `_QP`, `_ASCII`, `_UCS4`).  The number of arguments is saved in `_N_IDS`.  If `_KEEP_ARGS` is defined, the
+! arguments are not undefined at the end of the file.  The resulting informations are:
+!   * `_CLASS?`: the kind class of the type (`_CLASS_K` for logical or integer, `_CLASS_P` for real or complex, `_CLASS_S` for
 !     character),
 !   * `_TYPE?`: the type value,
 !   * `_KIND?`: the kind value,
@@ -16,12 +16,12 @@
 !   * `_RES_TYPE?`: the type specifier for declarations of procedure results,
 !   * `_TYPE_LEN?(<length>)`: the type specifier for declarations of character variables with a given length,
 !   * `_TYPE_NAME?`: the full name of the type,
-!   * `_TYPE_LABEL?`: the label of the type,
-!   * `_KIND_LABEL?`: the label of the kind,
-!   * `_LABEL?`: the label of the type and the kind.
+!   * `_TYPE_LABEL?`: the type label,
+!   * `_KIND_LABEL?`: the kind label,
+!   * `_LABEL?`: the combined label of the type and the kind.
 !   * `_NUMBER?`: a defined variable if the type is a number type,
-! In the case of two arguments, the information of the larger type and kind (larger value of `_ID?`) is copied to variables with
-! the label `0` ($2<0>).
+! In the case of two arguments, the information of the larger type and kind value (value of `_ID?`) is copied to variables with the
+! label `0` ($2<0>).
 !   * `_LOGICAL < _INTEGER < _REAL < _COMPLEX < _CHARACTER`,
 !   * `_K1 < _K2 < _K4 < _K8 < _K16`,
 !   * `_HP < _SP < _DP < _XDP < _QP`,
