@@ -1,8 +1,20 @@
-#define _PROC _CAT(cat_,_LABEL)
-elemental function _PROC(arg1, arg2) result(res)
-    _ARG_TYPE, intent(in) :: arg1, arg2
-    _TYPE_LEN(LEN(arg1)+LEN(arg2)) :: res
+#define _PROC _CAT3(_LABEL1,_cat_,_LABEL2)
+pure function _PROC(arg1, arg2) result(res)
+    _ARG_TYPE1, intent(in) :: arg1
+    _ARG_TYPE2, intent(in) :: arg2
+    _RES_TYPE1 :: res
 
-    res = arg1 // arg2
+    res = arg1 // to_character(arg2)
+end function _PROC
+#undef _PROC
+
+
+#define _PROC _CAT3(_LABEL2,_cat_,_LABEL1)
+pure function _PROC(arg1, arg2) result(res)
+    _ARG_TYPE2, intent(in) :: arg1
+    _ARG_TYPE1, intent(in) :: arg2
+    _RES_TYPE1 :: res
+
+    res = to_character(arg1) // arg2
 end function _PROC
 #undef _PROC

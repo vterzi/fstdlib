@@ -68,9 +68,7 @@ module stdlib_base
 #undef _OP
 
 #define _OP cat
-    interface operator(+)
-#define _ID _CHARACTER
-#include "../inc/decls.inc"
+    interface operator(//)
 #define _ID1 _LOGICAL
 #define _ID2 _CHARACTER
 #define _DEFAULT_ONLY2
@@ -104,7 +102,15 @@ module stdlib_base
 #define _DEFAULT_ONLY1
 #include "../inc/decls.inc"
     end interface
-    interface operator(//)
+#undef _OP
+
+#define _OP join
+    interface operator(+)
+#define _ID1 _CHARACTER
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY1
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
 #define _ID1 _LOGICAL
 #define _ID2 _CHARACTER
 #define _DEFAULT_ONLY2
@@ -227,11 +233,31 @@ contains
 #undef _FILE
 
 #define _FILE "../base/cat.inc"
-#define _ID _CHARACTER
+#define _ID1 _CHARACTER
+#define _ID2 _LOGICAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _REAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _COMPLEX
+#define _DEFAULT_ONLY1
 #include "../inc/defs.inc"
 #undef _FILE
 
-#define _FILE "../base/catobj.inc"
+#define _FILE "../base/join_s.inc"
+#define _ID _CHARACTER
+#define _DEFAULT_ONLY
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../base/join.inc"
 #define _ID1 _CHARACTER
 #define _ID2 _LOGICAL
 #define _DEFAULT_ONLY1
