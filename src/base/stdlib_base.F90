@@ -1,3 +1,6 @@
+! Basic utilities
+
+
 module stdlib_base
     use stdlib_kinds
     use stdlib_ascii, only: DIGITS, UPPERCASE, LOWERCASE
@@ -173,7 +176,7 @@ module stdlib_base
 #undef _OP
 
 #define _OP sort
-    interface sort
+    interface _OP
 #define _ID _INTEGER
 #include "../inc/decls.inc"
 #define _ID _REAL
