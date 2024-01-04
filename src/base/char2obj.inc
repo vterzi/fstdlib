@@ -1,6 +1,10 @@
+! {"id.inc"(_ID)} + () -(_PROC0, _PROC)> ()
+! Define conversion functions from the character type to other basic data types.
+
+
 #define _PROC0 _CAT(to_,_TYPE_NAME)
-#ifdef _KIND
-#  define _PROC _CAT(_PROC0,_KIND)
+#ifdef _KIND_LABEL
+#  define _PROC _CAT(_PROC0,_KIND_LABEL)
 #else
 #  define _PROC _PROC0
 #endif

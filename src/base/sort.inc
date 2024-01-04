@@ -1,3 +1,7 @@
+! {"id.inc"(_ID)} + () -(_PROC, _SUBPROC, _BACK)> ("sort_proc.inc")
+! Define procedures for sorting arrays.
+
+
 #define _PROC _CAT(sort_,_LABEL)
 pure subroutine _PROC(array, back)
     _ARG_TYPE, intent(inout) :: array(:)

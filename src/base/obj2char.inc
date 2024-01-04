@@ -1,3 +1,7 @@
+! {"id.inc"(_ID)} + () -(_PROC)> ()
+! Define conversion functions from other basic data types to the character type.
+
+
 #define _PROC _CAT(to_character_,_LABEL)
 pure function _PROC(arg, fmt) result(res)
     _ARG_TYPE, intent(in) :: arg

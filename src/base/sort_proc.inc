@@ -1,3 +1,7 @@
+! {"id.inc"} + (_SUBPROC, _BACK) -(_OP1, _OP2)> ()
+! Define subprocedures for sorting procedures.
+
+
 #ifndef _BACK
 #  define _OP1 >
 #  define _OP2 <

@@ -1,3 +1,7 @@
+! {"id.inc"(_ID1, _ID2)} + () -(_PROC)> ()
+! Define space-separated concatenation functions for the character type with other basic data types.  `_ID1` must be `_CHARACTER`.
+
+
 #define _PROC _CAT3(_LABEL1,_join_,_LABEL2)
 pure function _PROC(arg1, arg2) result(res)
     _ARG_TYPE1, intent(in) :: arg1
