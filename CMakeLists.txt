@@ -12,5 +12,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
 
 include(cmake/kinds.cmake)
+find_package(MPI)
+# ${MPI_Fortran_FOUND} ${MPI_Fortran_HAVE_F08_MODULE}
 
 add_subdirectory(src)
+
+include(CTest)
+add_subdirectory(tests)
