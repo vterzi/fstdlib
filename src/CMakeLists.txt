@@ -9,6 +9,3 @@ set(SRC
     )
 
 add_library(stdlib SHARED "${SRC}")
-
-set_target_properties(stdlib PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
