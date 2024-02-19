@@ -1,7 +1,7 @@
 ! $1 = (_LOGICAL, _INTEGER, _REAL, _COMPLEX, _CHARACTER, _CLASS_K, _CLASS_P, _CLASS_S)
 ! $2<?> = (_ID?, [_DIM?])
 ! $3<?> = (_CLASS?, _TYPE?, _KIND?, _ELEM_TYPE?, _ARG_TYPE?, _ALLOC_TYPE?, _TYPE_LEN?, _TYPE_AS?, _TYPE_NAME?, _TYPE_LABEL?,
-!   _KIND_LABEL?, _DIM_LABEL?, _LABEL?, [_DIM_EMPTY?], [_DIM_AS?], [_NUMBER?])
+!   _KIND_LABEL?, _DIM_LABEL?, _LABEL?, _SIZE?, [_DIM_EMPTY?], [_DIM_AS?], [_NUMBER?])
 ! {_KEEP_ARGS} + ($2<>) -(_DIFF)> ("cat.inc", [$2<>], $1, $3<>, _N_IDS)
 ! {_KEEP_ARGS} + ($2<1>, $2<2>) -(_DIFF)> ("cat.inc", [$2<1>], [$2<2>], $1, $3<1>, $3<2>, $3<0>, _N_IDS)
 ! Determine information about one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a type
@@ -22,8 +22,9 @@
 !   * `_TYPE_LABEL?`: the type label,
 !   * `_KIND_LABEL?`: the kind label,
 !   * `_DIM_LABEL?`: the dimension label,
-!   * `_LABEL?`: the combined label of the type, the kind, and the dimension.
-!   * `_NUMBER?`: a defined variable if the type is a number type,
+!   * `_LABEL?`: the combined label of the type, the kind, and the dimension,
+!   * `_SIZE?(<object>)`: the size of a given object,
+!   * `_NUMBER?`: a defined variable if the type is a number type.
 ! In the case of two arguments, the information of the larger type and kind value (value of `_ID?`) is copied to variables with the
 ! label `0` ($2<0>).
 !   * `_LOGICAL < _INTEGER < _REAL < _COMPLEX < _CHARACTER`,
@@ -65,6 +66,7 @@
 #  undef _KIND_LABEL1
 #  undef _DIM_LABEL1
 #  undef _LABEL1
+#  undef _SIZE1
 #  undef _NUMBER1
 #  undef _DIM_EMPTY1
 #  undef _DIM_AS1
@@ -73,8 +75,10 @@
 #  endif
 #  if _DIM1 == 0
 #    define _DIM_LABEL1
+#    define _SIZE1(X) 1
 #  else
 #    define _DIM_LABEL1 _CAT(D,_DIM1)
+#    define _SIZE1(X) SIZE(X)
 #    if _DIM1 == 1
 #      define _DIM_EMPTY1 dimension(:)
 #      define _DIM_AS1(X) dimension(SIZE(X,1))
@@ -222,6 +226,7 @@
 #  undef _KIND_LABEL2
 #  undef _DIM_LABEL2
 #  undef _LABEL2
+#  undef _SIZE2
 #  undef _NUMBER2
 #  undef _DIM_EMPTY2
 #  undef _DIM_AS2
@@ -230,8 +235,10 @@
 #  endif
 #  if _DIM2 == 0
 #    define _DIM_LABEL2
+#    define _SIZE2(X) 1
 #  else
 #    define _DIM_LABEL2 _CAT(D,_DIM2)
+#    define _SIZE2(X) SIZE(X)
 #    if _DIM2 == 1
 #      define _DIM_EMPTY2 dimension(:)
 #      define _DIM_AS2(X) dimension(SIZE(X,1))
@@ -379,6 +386,7 @@
 #  undef _KIND_LABEL0
 #  undef _DIM_LABEL0
 #  undef _LABEL0
+#  undef _SIZE0
 #  undef _NUMBER0
 #  if _ID1 >= _ID2
 #    define _TYPE_NAME0 _TYPE_NAME1
@@ -397,6 +405,7 @@
 #    define _KIND_LABEL0 _KIND_LABEL1
 #    define _DIM_LABEL0 _DIM_LABEL1
 #    define _LABEL0 _LABEL1
+#    define _SIZE0 _SIZE1
 #  else
 #    define _TYPE_NAME0 _TYPE_NAME2
 #    undef _TYPE0
@@ -414,6 +423,7 @@
 #    define _KIND_LABEL0 _KIND_LABEL2
 #    define _DIM_LABEL0 _DIM_LABEL2
 #    define _LABEL0 _LABEL2
+#    define _SIZE0 _SIZE2
 #  endif
 #  ifndef _KEEP_ARGS
 #    undef _ID1
