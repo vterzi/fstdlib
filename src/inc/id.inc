@@ -1,7 +1,7 @@
 ! $1 = (_LOGICAL, _INTEGER, _REAL, _COMPLEX, _CHARACTER, _CLASS_K, _CLASS_P, _CLASS_S)
 ! $2<?> = (_ID?, [_DIM?])
 ! $3<?> = (_CLASS?, _TYPE?, _KIND?, _ELEM_TYPE?, _ARG_TYPE?, _ALLOC_TYPE?, _TYPE_LEN?, _TYPE_AS?, _TYPE_NAME?, _TYPE_LABEL?,
-!   _KIND_LABEL?, _DIM_LABEL?, _LABEL?, _SIZE?, [_DIM_EMPTY?], [_DIM_AS?], [_NUMBER?])
+!   _KIND_LABEL?, _DIM_LABEL?, _LABEL?, _SIZE?, [_NUMBER?], _EQ?, _NE?, [_DIM_EMPTY?], [_DIM_AS?])
 ! {_KEEP_ARGS} + ($2<>) -(_DIFF)> ("cat.inc", [$2<>], $1, $3<>, _N_IDS)
 ! {_KEEP_ARGS} + ($2<1>, $2<2>) -(_DIFF)> ("cat.inc", [$2<1>], [$2<2>], $1, $3<1>, $3<2>, $3<0>, _N_IDS)
 ! Determine information about one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a type
@@ -24,6 +24,8 @@
 !   * `_DIM_LABEL?`: the dimension label,
 !   * `_LABEL?`: the combined label of the type, the kind, and the dimension,
 !   * `_SIZE?(<object>)`: the size of a given object,
+!   * `_EQ?(<object_1>,<object_2>)`: the comparison of two given objects for equality,
+!   * `_NE?(<object_1>,<object_2>)`: the comparison of two given objects for inequality,
 !   * `_NUMBER?`: a defined variable if the type is a number type.
 ! In the case of two arguments, the information of the larger type and kind value (value of `_ID?`) is copied to variables with the
 ! label `0` ($2<0>).
@@ -68,6 +70,8 @@
 #  undef _LABEL1
 #  undef _SIZE1
 #  undef _NUMBER1
+#  undef _EQ1
+#  undef _NE1
 #  undef _DIM_EMPTY1
 #  undef _DIM_AS1
 #  ifndef _DIM1
@@ -130,11 +134,15 @@
 #      define _ALLOC_TYPE1 _TYPE_LEN1(:), _DIM_EMPTY1, allocatable
 #      define _ELEM_TYPE1 _TYPE_LEN1(:), allocatable
 #      define _TYPE_AS1(X) _TYPE_LEN1(LEN(X)), _DIM_AS1(X)
+#      define _EQ1(X,Y) ALL(X == Y)
+#      define _NE1(X,Y) ANY(X /= Y)
 #    else
 #      define _ARG_TYPE1 _TYPE_LEN1(*)
 #      define _ALLOC_TYPE1 _TYPE_LEN1(:), allocatable
 #      define _ELEM_TYPE1 _ALLOC_TYPE1
 #      define _TYPE_AS1(X) _TYPE_LEN1(LEN(X))
+#      define _EQ1(X,Y) X == Y
+#      define _NE1(X,Y) X /= Y
 #    endif
 #  else
 #    if _LOGICAL <= _ID1 & _ID1 <= _LOGICAL + _MAX_KIND
@@ -205,11 +213,25 @@
 #      define _ALLOC_TYPE1 _ARG_TYPE1, allocatable
 #      define _TYPE_LEN1(X) _ALLOC_TYPE1
 #      define _TYPE_AS1(X) _ELEM_TYPE1, _DIM_AS1(X)
+#      ifdef _NUMBER1
+#        define _EQ1(X,Y) ALL(X == Y)
+#        define _NE1(X,Y) ANY(X /= Y)
+#      else
+#        define _EQ1(X,Y) ALL(X .eqv. Y)
+#        define _NE1(X,Y) ANY(X .neqv. Y)
+#      endif
 #    else
 #      define _ARG_TYPE1 _ELEM_TYPE1
 #      define _ALLOC_TYPE1 _ELEM_TYPE1
 #      define _TYPE_LEN1(X) _ELEM_TYPE1
 #      define _TYPE_AS1(X) _ELEM_TYPE1
+#      ifdef _NUMBER1
+#        define _EQ1(X,Y) X == Y
+#        define _NE1(X,Y) X /= Y
+#      else
+#        define _EQ1(X,Y) X .eqv. Y
+#        define _NE1(X,Y) X .neqv. Y
+#      endif
 #    endif
 #  endif
 #  define _LABEL1 _CAT3(_TYPE_LABEL1,_KIND_LABEL1,_DIM_LABEL1)
@@ -228,6 +250,8 @@
 #  undef _LABEL2
 #  undef _SIZE2
 #  undef _NUMBER2
+#  undef _EQ2
+#  undef _NE2
 #  undef _DIM_EMPTY2
 #  undef _DIM_AS2
 #  ifndef _DIM2
@@ -290,11 +314,15 @@
 #      define _ALLOC_TYPE2 _TYPE_LEN2(:), _DIM_EMPTY2, allocatable
 #      define _ELEM_TYPE2 _TYPE_LEN2(:), allocatable
 #      define _TYPE_AS2(X) _TYPE_LEN2(LEN(X)), _DIM_AS2(X)
+#      define _EQ2(X,Y) ALL(X == Y)
+#      define _NE2(X,Y) ANY(X /= Y)
 #    else
 #      define _ARG_TYPE2 _TYPE_LEN2(*)
 #      define _ALLOC_TYPE2 _TYPE_LEN2(:), allocatable
 #      define _ELEM_TYPE2 _ALLOC_TYPE2
 #      define _TYPE_AS2(X) _TYPE_LEN2(LEN(X))
+#      define _EQ2(X,Y) X == Y
+#      define _NE2(X,Y) X /= Y
 #    endif
 #  else
 #    if _LOGICAL <= _ID2 & _ID2 <= _LOGICAL + _MAX_KIND
@@ -365,11 +393,25 @@
 #      define _ALLOC_TYPE2 _ARG_TYPE2, allocatable
 #      define _TYPE_LEN2(X) _ALLOC_TYPE2
 #      define _TYPE_AS2(X) _ELEM_TYPE2, _DIM_AS2(X)
+#      ifdef _NUMBER2
+#        define _EQ2(X,Y) ALL(X == Y)
+#        define _NE2(X,Y) ANY(X /= Y)
+#      else
+#        define _EQ2(X,Y) ALL(X .eqv. Y)
+#        define _NE2(X,Y) ANY(X .neqv. Y)
+#      endif
 #    else
 #      define _ARG_TYPE2 _ELEM_TYPE2
 #      define _ALLOC_TYPE2 _ELEM_TYPE2
 #      define _TYPE_LEN2(X) _ELEM_TYPE2
 #      define _TYPE_AS2(X) _ELEM_TYPE2
+#      ifdef _NUMBER2
+#        define _EQ2(X,Y) X == Y
+#        define _NE2(X,Y) X /= Y
+#      else
+#        define _EQ2(X,Y) X .eqv. Y
+#        define _NE2(X,Y) X .neqv. Y
+#      endif
 #    endif
 #  endif
 #  define _LABEL2 _CAT3(_TYPE_LABEL2,_KIND_LABEL2,_DIM_LABEL2)
@@ -388,6 +430,8 @@
 #  undef _LABEL0
 #  undef _SIZE0
 #  undef _NUMBER0
+#  undef _EQ0
+#  undef _NE0
 #  if _ID1 >= _ID2
 #    define _TYPE_NAME0 _TYPE_NAME1
 #    undef _TYPE0
@@ -406,6 +450,8 @@
 #    define _DIM_LABEL0 _DIM_LABEL1
 #    define _LABEL0 _LABEL1
 #    define _SIZE0 _SIZE1
+#    define _EQ0 _EQ1
+#    define _NE0 _NE1
 #  else
 #    define _TYPE_NAME0 _TYPE_NAME2
 #    undef _TYPE0
@@ -424,6 +470,8 @@
 #    define _DIM_LABEL0 _DIM_LABEL2
 #    define _LABEL0 _LABEL2
 #    define _SIZE0 _SIZE2
+#    define _EQ0 _EQ2
+#    define _NE0 _NE2
 #  endif
 #  ifndef _KEEP_ARGS
 #    undef _ID1
@@ -446,6 +494,8 @@
 #  undef _DIM_LABEL
 #  undef _LABEL
 #  undef _NUMBER
+#  undef _EQ
+#  undef _NE
 #  undef _DIM_EMPTY
 #  undef _DIM_AS
 #  ifndef _DIM
@@ -506,11 +556,15 @@
 #      define _ALLOC_TYPE _TYPE_LEN(:), _DIM_EMPTY, allocatable
 #      define _ELEM_TYPE _TYPE_LEN(:), allocatable
 #      define _TYPE_AS(X) _TYPE_LEN(LEN(X)), _DIM_AS(X)
+#      define _EQ(X,Y) ALL(X == Y)
+#      define _NE(X,Y) ANY(X /= Y)
 #    else
 #      define _ARG_TYPE _TYPE_LEN(*)
 #      define _ALLOC_TYPE _TYPE_LEN(:), allocatable
 #      define _ELEM_TYPE _ALLOC_TYPE
 #      define _TYPE_AS(X) _TYPE_LEN(LEN(X))
+#      define _EQ(X,Y) X == Y
+#      define _NE(X,Y) X /= Y
 #    endif
 #  else
 #    if _LOGICAL <= _ID & _ID <= _LOGICAL + _MAX_KIND
@@ -581,11 +635,25 @@
 #      define _ALLOC_TYPE _ARG_TYPE, allocatable
 #      define _TYPE_LEN(X) _ALLOC_TYPE
 #      define _TYPE_AS(X) _ELEM_TYPE, _DIM_AS(X)
+#      ifdef _NUMBER
+#        define _EQ(X,Y) ALL(X == Y)
+#        define _NE(X,Y) ANY(X /= Y)
+#      else
+#        define _EQ(X,Y) ALL(X .eqv. Y)
+#        define _NE(X,Y) ANY(X .neqv. Y)
+#      endif
 #    else
 #      define _ARG_TYPE _ELEM_TYPE
 #      define _ALLOC_TYPE _ELEM_TYPE
 #      define _TYPE_LEN(X) _ELEM_TYPE
 #      define _TYPE_AS(X) _ELEM_TYPE
+#      ifdef _NUMBER
+#        define _EQ(X,Y) X == Y
+#        define _NE(X,Y) X /= Y
+#      else
+#        define _EQ(X,Y) X .eqv. Y
+#        define _NE(X,Y) X .neqv. Y
+#      endif
 #    endif
 #  endif
 #  define _LABEL _CAT3(_TYPE_LABEL,_KIND_LABEL,_DIM_LABEL)

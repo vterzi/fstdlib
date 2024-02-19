@@ -8,7 +8,7 @@ elemental function _PROC(arg1, arg2) result(res)
     _ARG_TYPE2, intent(in) :: arg2
     _ELEM_TYPE0 :: res
 
-    res = arg1 .eqv. arg2
+    res = _EQ0(arg1, arg2)
 end function _PROC
 #undef _PROC
 
@@ -19,6 +19,6 @@ elemental function _PROC(arg1, arg2) result(res)
     _ARG_TYPE2, intent(in) :: arg2
     _ELEM_TYPE0 :: res
 
-    res = arg1 .neqv. arg2
+    res = _NE0(arg1, arg2)
 end function _PROC
 #undef _PROC

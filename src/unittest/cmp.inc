@@ -1,19 +1,10 @@
-#if _TYPE == _LOGICAL
-#  define _EQ .eqv.
-#  define _NE .neqv.
-#else
-#  define _EQ ==
-#  define _NE /=
-#endif
-
-
 #define _PROC _CAT(assert_equal_,_LABEL)
 subroutine _PROC(first, second, msg, success)
     _ARG_TYPE, intent(in) :: first, second
     character(len=*), intent(in), optional :: msg
     logical, intent(inout), optional :: success
 
-    if (.not. (first _EQ second)) then
+    if (.not. (_EQ(first, second))) then
         if (PRESENT(msg)) then
             write(*, *) msg
         end if
@@ -34,7 +25,7 @@ subroutine _PROC(first, second, msg, success)
     character(len=*), intent(in), optional :: msg
     logical, intent(inout), optional :: success
 
-    if (.not. (first _NE second)) then
+    if (.not. (_NE(first, second))) then
         if (PRESENT(msg)) then
             write(*, *) msg
         end if
