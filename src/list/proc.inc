@@ -3,14 +3,14 @@
 #  define _IN_TYPE _ARG_TYPE, dimension(this%dimension_)
 #  define _IN_TYPE_ARR _ARG_TYPE, dimension(:, :)
 #  define _OUT_TYPE _IN_TYPE
-#  define _OUT_TYPE_ARR _RES_TYPE, dimension(this%dimension_, this%size_)
+#  define _OUT_TYPE_ARR _ELEM_TYPE, dimension(this%dimension_, this%size_)
 #  define _ARR_IDX(X) :, X
 #  define _ARR_SIZE(X) SIZE(X, 2)
 #elif _TYPE == _CHARACTER
 #  define _ARRAY_LABEL
 #  define _IN_TYPE _ARG_TYPE
 #  define _IN_TYPE_ARR _IN_TYPE, dimension(:)
-#  define _OUT_TYPE _RES_TYPE
+#  define _OUT_TYPE _ELEM_TYPE
 #  define _OUT_TYPE_ARR _OUT_TYPE, dimension(:)
 #  define _ARR_IDX(X) X
 #  define _ARR_SIZE(X) SIZE(X)

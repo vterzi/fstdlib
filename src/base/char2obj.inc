@@ -5,7 +5,7 @@
 #define _PROC _CAT3(to_,_TYPE_NAME,_KIND_LABEL)
 elemental function _PROC(arg) result(res)
     character(len=*), intent(in) :: arg
-    _RES_TYPE :: res
+    _ELEM_TYPE :: res
 
     read(arg, *) res
 end function _PROC

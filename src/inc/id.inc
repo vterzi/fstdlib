@@ -1,24 +1,28 @@
 ! $1 = (_LOGICAL, _INTEGER, _REAL, _COMPLEX, _CHARACTER, _CLASS_K, _CLASS_P, _CLASS_S)
-! $2<?> = (_CLASS?, _TYPE?, _KIND?, _VAR_TYPE?, _ARG_TYPE?, _RES_TYPE?, _TYPE_LEN?, _TYPE_NAME?, _TYPE_LABEL?, _KIND_LABEL?,
-!   _LABEL?, [_NUMBER?])
-! {_KEEP_ARGS} + (_ID) -(_DIFF)> ("cat.inc", [_ID], $1, $2<>, _N_IDS)
-! {_KEEP_ARGS} + (_ID1, _ID2) -(_DIFF)> ("cat.inc", [_ID1], [_ID2], $1, $2<1>, $2<2>, $2<0>, _N_IDS)
+! $2<?> = (_ID?, [_DIM?])
+! $3<?> = (_CLASS?, _TYPE?, _KIND?, _ELEM_TYPE?, _ARG_TYPE?, _ALLOC_TYPE?, _TYPE_LEN?, _TYPE_AS?, _TYPE_NAME?, _TYPE_LABEL?,
+!   _KIND_LABEL?, _DIM_LABEL?, _LABEL?, [_DIM_EMPTY?], [_DIM_AS?], [_NUMBER?])
+! {_KEEP_ARGS} + ($2<>) -(_DIFF)> ("cat.inc", [$2<>], $1, $3<>, _N_IDS)
+! {_KEEP_ARGS} + ($2<1>, $2<2>) -(_DIFF)> ("cat.inc", [$2<1>], [$2<2>], $1, $3<1>, $3<2>, $3<0>, _N_IDS)
 ! Determine information about one basic data type `_ID` or two basic data types `_ID1` and `_ID2`.  `_ID?` is the sum of a type
 ! value (`_LOGICAL`, `_INTEGER`, `_REAL`, `_COMPLEX`, `_CHARACTER`) and a kind value (`_K1`, `_K2`, `_K4`, `_K16`, `_HP`, `_SP`,
-! `_DP`, `_XDP`, `_QP`, `_ASCII`, `_UCS4`).  The number of arguments is saved in `_N_IDS`.  If `_KEEP_ARGS` is defined, the
-! arguments are not undefined at the end of the file.  The resulting informations are:
+! `_DP`, `_XDP`, `_QP`, `_ASCII`, `_UCS4`).  The number of data type as arguments is saved in `_N_IDS`.  Dimensionality of data
+! types can be specified by the optional arguments `_DIM` or `_DIM1` and `_DIM2`.  If `_KEEP_ARGS` is defined, the arguments are not
+! undefined at the end of the file.  The resulting informations are:
 !   * `_CLASS?`: the kind class of the type (`_CLASS_K` for logical or integer, `_CLASS_P` for real or complex, `_CLASS_S` for
 !     character),
 !   * `_TYPE?`: the type value,
 !   * `_KIND?`: the kind value,
-!   * `_VAR_TYPE?`: the type specifier for declarations of variables,
+!   * `_ELEM_TYPE?`: the type specifier for declarations of scalar variables,
 !   * `_ARG_TYPE?`: the type specifier for declarations of procedure arguments,
-!   * `_RES_TYPE?`: the type specifier for declarations of procedure results,
+!   * `_ALLOC_TYPE?`: the type specifier for declarations of allocatable variables,
 !   * `_TYPE_LEN?(<length>)`: the type specifier for declarations of character variables with a given length,
+!   * `_TYPE_AS?(<object>)`: the type specifier for declarations of variables with the same length and dimensions as a given object,
 !   * `_TYPE_NAME?`: the full name of the type,
 !   * `_TYPE_LABEL?`: the type label,
 !   * `_KIND_LABEL?`: the kind label,
-!   * `_LABEL?`: the combined label of the type and the kind.
+!   * `_DIM_LABEL?`: the dimension label,
+!   * `_LABEL?`: the combined label of the type, the kind, and the dimension.
 !   * `_NUMBER?`: a defined variable if the type is a number type,
 ! In the case of two arguments, the information of the larger type and kind value (value of `_ID?`) is copied to variables with the
 ! label `0` ($2<0>).
@@ -52,14 +56,50 @@
 #  undef _TYPE_NAME1
 #  undef _CLASS1
 #  undef _KIND1
-#  undef _VAR_TYPE1
+#  undef _ELEM_TYPE1
 #  undef _ARG_TYPE1
-#  undef _RES_TYPE1
+#  undef _ALLOC_TYPE1
 #  undef _TYPE_LEN1
+#  undef _TYPE_AS1
 #  undef _TYPE_LABEL1
 #  undef _KIND_LABEL1
+#  undef _DIM_LABEL1
 #  undef _LABEL1
 #  undef _NUMBER1
+#  undef _DIM_EMPTY1
+#  undef _DIM_AS1
+#  ifndef _DIM1
+#    define _DIM1 0
+#  endif
+#  if _DIM1 == 0
+#    define _DIM_LABEL1
+#  else
+#    define _DIM_LABEL1 _CAT(D,_DIM1)
+#    if _DIM1 == 1
+#      define _DIM_EMPTY1 dimension(:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1))
+#    elif _DIM1 == 2
+#      define _DIM_EMPTY1 dimension(:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2))
+#    elif _DIM1 == 3
+#      define _DIM_EMPTY1 dimension(:,:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3))
+#    elif _DIM1 == 4
+#      define _DIM_EMPTY1 dimension(:,:,:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4))
+#    elif _DIM1 == 5
+#      define _DIM_EMPTY1 dimension(:,:,:,:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5))
+#    elif _DIM1 == 6
+#      define _DIM_EMPTY1 dimension(:,:,:,:,:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6))
+#    elif _DIM1 == 7
+#      define _DIM_EMPTY1 dimension(:,:,:,:,:,:,:)
+#      define _DIM_AS1(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6),SIZE(X,7))
+#    else
+#      error The value of the argument `_DIM1` out of range (0..7)
+#    endif
+#  endif
 #  if _CHARACTER <= _ID1 & _ID1 <= _CHARACTER + _MAX_KIND
 #    define _TYPE_NAME1 character
 #    define _TYPE_LABEL1 S
@@ -81,10 +121,17 @@
 #    else
 #      define _TYPE_LEN1(X) _TYPE_NAME1(len=X)
 #    endif
-#    define _LABEL1 _CAT(_TYPE_LABEL1,_KIND_LABEL1)
-#    define _VAR_TYPE1 _TYPE_LEN1(:), allocatable
-#    define _ARG_TYPE1 _TYPE_LEN1(*)
-#    define _RES_TYPE1 _VAR_TYPE1
+#    ifdef _DIM_AS1
+#      define _ARG_TYPE1 _TYPE_LEN1(*), _DIM_EMPTY1
+#      define _ALLOC_TYPE1 _TYPE_LEN1(:), _DIM_EMPTY1, allocatable
+#      define _ELEM_TYPE1 _TYPE_LEN1(:), allocatable
+#      define _TYPE_AS1(X) _TYPE_LEN1(LEN(X)), _DIM_AS1(X)
+#    else
+#      define _ARG_TYPE1 _TYPE_LEN1(*)
+#      define _ALLOC_TYPE1 _TYPE_LEN1(:), allocatable
+#      define _ELEM_TYPE1 _ALLOC_TYPE1
+#      define _TYPE_AS1(X) _TYPE_LEN1(LEN(X))
+#    endif
 #  else
 #    if _LOGICAL <= _ID1 & _ID1 <= _LOGICAL + _MAX_KIND
 #      define _TYPE_NAME1 logical
@@ -143,29 +190,73 @@
 #      endif
 #    endif
 #    ifdef _KIND1
-#      define _VAR_TYPE1 _TYPE_NAME1(_KIND1)
+#      define _ELEM_TYPE1 _TYPE_NAME1(_KIND1)
 #      define _KIND_LABEL1 _KIND1
 #    else
-#      define _VAR_TYPE1 _TYPE_NAME1
+#      define _ELEM_TYPE1 _TYPE_NAME1
 #      define _KIND_LABEL1
 #    endif
-#    define _LABEL1 _CAT(_TYPE_LABEL1,_KIND_LABEL1)
-#    define _ARG_TYPE1 _VAR_TYPE1
-#    define _RES_TYPE1 _VAR_TYPE1
-#    define _TYPE_LEN1(X) _VAR_TYPE1
+#    ifdef _DIM_AS1
+#      define _ARG_TYPE1 _ELEM_TYPE1, _DIM_EMPTY1
+#      define _ALLOC_TYPE1 _ARG_TYPE1, allocatable
+#      define _TYPE_LEN1(X) _ALLOC_TYPE1
+#      define _TYPE_AS1(X) _ELEM_TYPE1, _DIM_AS1(X)
+#    else
+#      define _ARG_TYPE1 _ELEM_TYPE1
+#      define _ALLOC_TYPE1 _ELEM_TYPE1
+#      define _TYPE_LEN1(X) _ELEM_TYPE1
+#      define _TYPE_AS1(X) _ELEM_TYPE1
+#    endif
 #  endif
+#  define _LABEL1 _CAT3(_TYPE_LABEL1,_KIND_LABEL1,_DIM_LABEL1)
 #  undef _DIFF
 #  undef _TYPE_NAME2
 #  undef _CLASS2
 #  undef _KIND2
-#  undef _VAR_TYPE2
+#  undef _ELEM_TYPE2
 #  undef _ARG_TYPE2
-#  undef _RES_TYPE2
+#  undef _ALLOC_TYPE2
 #  undef _TYPE_LEN2
+#  undef _TYPE_AS2
 #  undef _TYPE_LABEL2
 #  undef _KIND_LABEL2
+#  undef _DIM_LABEL2
 #  undef _LABEL2
 #  undef _NUMBER2
+#  undef _DIM_EMPTY2
+#  undef _DIM_AS2
+#  ifndef _DIM2
+#    define _DIM2 0
+#  endif
+#  if _DIM2 == 0
+#    define _DIM_LABEL2
+#  else
+#    define _DIM_LABEL2 _CAT(D,_DIM2)
+#    if _DIM2 == 1
+#      define _DIM_EMPTY2 dimension(:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1))
+#    elif _DIM2 == 2
+#      define _DIM_EMPTY2 dimension(:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2))
+#    elif _DIM2 == 3
+#      define _DIM_EMPTY2 dimension(:,:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3))
+#    elif _DIM2 == 4
+#      define _DIM_EMPTY2 dimension(:,:,:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4))
+#    elif _DIM2 == 5
+#      define _DIM_EMPTY2 dimension(:,:,:,:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5))
+#    elif _DIM2 == 6
+#      define _DIM_EMPTY2 dimension(:,:,:,:,:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6))
+#    elif _DIM2 == 7
+#      define _DIM_EMPTY2 dimension(:,:,:,:,:,:,:)
+#      define _DIM_AS2(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6),SIZE(X,7))
+#    else
+#      error The value of the argument `_DIM2` out of range (0..7)
+#    endif
+#  endif
 #  if _CHARACTER <= _ID2 & _ID2 <= _CHARACTER + _MAX_KIND
 #    define _TYPE_NAME2 character
 #    define _TYPE_LABEL2 S
@@ -187,10 +278,17 @@
 #    else
 #      define _TYPE_LEN2(X) _TYPE_NAME2(len=X)
 #    endif
-#    define _LABEL2 _CAT(_TYPE_LABEL2,_KIND_LABEL2)
-#    define _VAR_TYPE2 _TYPE_LEN2(:), allocatable
-#    define _ARG_TYPE2 _TYPE_LEN2(*)
-#    define _RES_TYPE2 _VAR_TYPE2
+#    ifdef _DIM_AS2
+#      define _ARG_TYPE2 _TYPE_LEN2(*), _DIM_EMPTY2
+#      define _ALLOC_TYPE2 _TYPE_LEN2(:), _DIM_EMPTY2, allocatable
+#      define _ELEM_TYPE2 _TYPE_LEN2(:), allocatable
+#      define _TYPE_AS2(X) _TYPE_LEN2(LEN(X)), _DIM_AS2(X)
+#    else
+#      define _ARG_TYPE2 _TYPE_LEN2(*)
+#      define _ALLOC_TYPE2 _TYPE_LEN2(:), allocatable
+#      define _ELEM_TYPE2 _ALLOC_TYPE2
+#      define _TYPE_AS2(X) _TYPE_LEN2(LEN(X))
+#    endif
 #  else
 #    if _LOGICAL <= _ID2 & _ID2 <= _LOGICAL + _MAX_KIND
 #      define _TYPE_NAME2 logical
@@ -249,27 +347,37 @@
 #      endif
 #    endif
 #    ifdef _KIND2
-#      define _VAR_TYPE2 _TYPE_NAME2(_KIND2)
+#      define _ELEM_TYPE2 _TYPE_NAME2(_KIND2)
 #      define _KIND_LABEL2 _KIND2
 #    else
-#      define _VAR_TYPE2 _TYPE_NAME2
+#      define _ELEM_TYPE2 _TYPE_NAME2
 #      define _KIND_LABEL2
 #    endif
-#    define _LABEL2 _CAT(_TYPE_LABEL2,_KIND_LABEL2)
-#    define _ARG_TYPE2 _VAR_TYPE2
-#    define _RES_TYPE2 _VAR_TYPE2
-#    define _TYPE_LEN2(X) _VAR_TYPE2
+#    ifdef _DIM_AS2
+#      define _ARG_TYPE2 _ELEM_TYPE2, _DIM_EMPTY2
+#      define _ALLOC_TYPE2 _ARG_TYPE2, allocatable
+#      define _TYPE_LEN2(X) _ALLOC_TYPE2
+#      define _TYPE_AS2(X) _ELEM_TYPE2, _DIM_AS2(X)
+#    else
+#      define _ARG_TYPE2 _ELEM_TYPE2
+#      define _ALLOC_TYPE2 _ELEM_TYPE2
+#      define _TYPE_LEN2(X) _ELEM_TYPE2
+#      define _TYPE_AS2(X) _ELEM_TYPE2
+#    endif
 #  endif
+#  define _LABEL2 _CAT3(_TYPE_LABEL2,_KIND_LABEL2,_DIM_LABEL2)
 #  undef _DIFF
 #  undef _TYPE_NAME0
 #  undef _CLASS0
 #  undef _KIND0
-#  undef _VAR_TYPE0
+#  undef _ELEM_TYPE0
 #  undef _ARG_TYPE0
-#  undef _RES_TYPE0
+#  undef _ALLOC_TYPE0
 #  undef _TYPE_LEN0
+#  undef _TYPE_AS0
 #  undef _TYPE_LABEL0
 #  undef _KIND_LABEL0
+#  undef _DIM_LABEL0
 #  undef _LABEL0
 #  undef _NUMBER0
 #  if _ID1 >= _ID2
@@ -280,12 +388,14 @@
 #    ifdef _KIND1
 #      define _KIND0 _KIND1
 #    endif
-#    define _VAR_TYPE0 _VAR_TYPE1
+#    define _ELEM_TYPE0 _ELEM_TYPE1
 #    define _ARG_TYPE0 _ARG_TYPE1
-#    define _RES_TYPE0 _RES_TYPE1
+#    define _ALLOC_TYPE0 _ALLOC_TYPE1
 #    define _TYPE_LEN0 _TYPE_LEN1
+#    define _TYPE_AS0 _TYPE_AS1
 #    define _TYPE_LABEL0 _TYPE_LABEL1
 #    define _KIND_LABEL0 _KIND_LABEL1
+#    define _DIM_LABEL0 _DIM_LABEL1
 #    define _LABEL0 _LABEL1
 #  else
 #    define _TYPE_NAME0 _TYPE_NAME2
@@ -295,31 +405,71 @@
 #    ifdef _KIND2
 #      define _KIND0 _KIND2
 #    endif
-#    define _VAR_TYPE0 _VAR_TYPE2
+#    define _ELEM_TYPE0 _ELEM_TYPE2
 #    define _ARG_TYPE0 _ARG_TYPE2
-#    define _RES_TYPE0 _RES_TYPE2
+#    define _ALLOC_TYPE0 _ALLOC_TYPE2
 #    define _TYPE_LEN0 _TYPE_LEN2
+#    define _TYPE_AS0 _TYPE_AS2
 #    define _TYPE_LABEL0 _TYPE_LABEL2
 #    define _KIND_LABEL0 _KIND_LABEL2
+#    define _DIM_LABEL0 _DIM_LABEL2
 #    define _LABEL0 _LABEL2
 #  endif
 #  ifndef _KEEP_ARGS
 #    undef _ID1
 #    undef _ID2
+#    undef _DIM1
+#    undef _DIM2
 #  endif
 #elif defined(_ID)
 #  define _N_IDS 1
 #  undef _TYPE_NAME
 #  undef _CLASS
 #  undef _KIND
-#  undef _VAR_TYPE
+#  undef _ELEM_TYPE
 #  undef _ARG_TYPE
-#  undef _RES_TYPE
+#  undef _ALLOC_TYPE
 #  undef _TYPE_LEN
+#  undef _TYPE_AS
 #  undef _TYPE_LABEL
 #  undef _KIND_LABEL
+#  undef _DIM_LABEL
 #  undef _LABEL
 #  undef _NUMBER
+#  undef _DIM_EMPTY
+#  undef _DIM_AS
+#  ifndef _DIM
+#    define _DIM 0
+#  endif
+#  if _DIM == 0
+#    define _DIM_LABEL
+#  else
+#    define _DIM_LABEL _CAT(D,_DIM)
+#    if _DIM == 1
+#      define _DIM_EMPTY dimension(:)
+#      define _DIM_AS(X) dimension(SIZE(X,1))
+#    elif _DIM == 2
+#      define _DIM_EMPTY dimension(:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2))
+#    elif _DIM == 3
+#      define _DIM_EMPTY dimension(:,:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3))
+#    elif _DIM == 4
+#      define _DIM_EMPTY dimension(:,:,:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4))
+#    elif _DIM == 5
+#      define _DIM_EMPTY dimension(:,:,:,:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5))
+#    elif _DIM == 6
+#      define _DIM_EMPTY dimension(:,:,:,:,:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6))
+#    elif _DIM == 7
+#      define _DIM_EMPTY dimension(:,:,:,:,:,:,:)
+#      define _DIM_AS(X) dimension(SIZE(X,1),SIZE(X,2),SIZE(X,3),SIZE(X,4),SIZE(X,5),SIZE(X,6),SIZE(X,7))
+#    else
+#      error The value of the argument `_DIM` out of range (0..7)
+#    endif
+#  endif
 #  if _CHARACTER <= _ID & _ID <= _CHARACTER + _MAX_KIND
 #    define _TYPE_NAME character
 #    define _TYPE_LABEL S
@@ -341,10 +491,17 @@
 #    else
 #      define _TYPE_LEN(X) _TYPE_NAME(len=X)
 #    endif
-#    define _LABEL _CAT(_TYPE_LABEL,_KIND_LABEL)
-#    define _VAR_TYPE _TYPE_LEN(:), allocatable
-#    define _ARG_TYPE _TYPE_LEN(*)
-#    define _RES_TYPE _VAR_TYPE
+#    ifdef _DIM_AS
+#      define _ARG_TYPE _TYPE_LEN(*), _DIM_EMPTY
+#      define _ALLOC_TYPE _TYPE_LEN(:), _DIM_EMPTY, allocatable
+#      define _ELEM_TYPE _TYPE_LEN(:), allocatable
+#      define _TYPE_AS(X) _TYPE_LEN(LEN(X)), _DIM_AS(X)
+#    else
+#      define _ARG_TYPE _TYPE_LEN(*)
+#      define _ALLOC_TYPE _TYPE_LEN(:), allocatable
+#      define _ELEM_TYPE _ALLOC_TYPE
+#      define _TYPE_AS(X) _TYPE_LEN(LEN(X))
+#    endif
 #  else
 #    if _LOGICAL <= _ID & _ID <= _LOGICAL + _MAX_KIND
 #      define _TYPE_NAME logical
@@ -403,20 +560,29 @@
 #      endif
 #    endif
 #    ifdef _KIND
-#      define _VAR_TYPE _TYPE_NAME(_KIND)
+#      define _ELEM_TYPE _TYPE_NAME(_KIND)
 #      define _KIND_LABEL _KIND
 #    else
-#      define _VAR_TYPE _TYPE_NAME
+#      define _ELEM_TYPE _TYPE_NAME
 #      define _KIND_LABEL
 #    endif
-#    define _LABEL _CAT(_TYPE_LABEL,_KIND_LABEL)
-#    define _ARG_TYPE _VAR_TYPE
-#    define _RES_TYPE _VAR_TYPE
-#    define _TYPE_LEN(X) _VAR_TYPE
+#    ifdef _DIM_AS
+#      define _ARG_TYPE _ELEM_TYPE, _DIM_EMPTY
+#      define _ALLOC_TYPE _ARG_TYPE, allocatable
+#      define _TYPE_LEN(X) _ALLOC_TYPE
+#      define _TYPE_AS(X) _ELEM_TYPE, _DIM_AS(X)
+#    else
+#      define _ARG_TYPE _ELEM_TYPE
+#      define _ALLOC_TYPE _ELEM_TYPE
+#      define _TYPE_LEN(X) _ELEM_TYPE
+#      define _TYPE_AS(X) _ELEM_TYPE
+#    endif
 #  endif
+#  define _LABEL _CAT3(_TYPE_LABEL,_KIND_LABEL,_DIM_LABEL)
 #  undef _DIFF
 #  ifndef _KEEP_ARGS
 #    undef _ID
+#    undef _DIM
 #  endif
 #else
 #  error Two arguments `_ID1` and `_ID2` or one argument `_ID` required

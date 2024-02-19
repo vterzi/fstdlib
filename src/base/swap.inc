@@ -6,7 +6,7 @@
 elemental subroutine _PROC(arg1, arg2)
     _ARG_TYPE, intent(inout) :: arg1, arg2
 
-    _VAR_TYPE :: var
+    _ELEM_TYPE :: var
 
     var = arg1
     arg1 = arg2

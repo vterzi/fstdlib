@@ -2,10 +2,10 @@
 #define _PRIVATE_METHOD(T,P) procedure, private :: P => _PROC(T,P)
 #ifdef _ARRAY
 #  define _ARRAY_LABEL Array
-#  define _NODE_TYPE _VAR_TYPE, dimension(:), allocatable
+#  define _NODE_TYPE _ELEM_TYPE, dimension(:), allocatable
 #else
 #  define _ARRAY_LABEL
-#  define _NODE_TYPE _VAR_TYPE
+#  define _NODE_TYPE _ELEM_TYPE
 #endif
 
 

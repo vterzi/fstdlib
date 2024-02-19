@@ -6,7 +6,7 @@
 pure function _PROC(arg1, arg2) result(res)
     _ARG_TYPE1, intent(in) :: arg1
     _ARG_TYPE2, intent(in) :: arg2
-    _RES_TYPE1 :: res
+    _ALLOC_TYPE1 :: res
 
     res = arg1 // to_character(arg2)
 end function _PROC
@@ -17,7 +17,7 @@ end function _PROC
 pure function _PROC(arg1, arg2) result(res)
     _ARG_TYPE2, intent(in) :: arg1
     _ARG_TYPE1, intent(in) :: arg2
-    _RES_TYPE1 :: res
+    _ALLOC_TYPE1 :: res
 
     res = to_character(arg1) // arg2
 end function _PROC

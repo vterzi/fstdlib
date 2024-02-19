@@ -6,7 +6,7 @@
 elemental function _PROC(arg1, arg2) result(res)
     _ARG_TYPE1, intent(in) :: arg1
     _ARG_TYPE2, intent(in) :: arg2
-    _RES_TYPE0 :: res
+    _ELEM_TYPE0 :: res
 
     res = arg1 .eqv. arg2
 end function _PROC
@@ -17,7 +17,7 @@ end function _PROC
 elemental function _PROC(arg1, arg2) result(res)
     _ARG_TYPE1, intent(in) :: arg1
     _ARG_TYPE2, intent(in) :: arg2
-    _RES_TYPE0 :: res
+    _ELEM_TYPE0 :: res
 
     res = arg1 .neqv. arg2
 end function _PROC
