@@ -2,18 +2,18 @@ module stdlib_io
     use, intrinsic :: ISO_FORTRAN_ENV, only: IOSTAT_END, IOSTAT_EOR
     use stdlib_kinds
     use stdlib_ascii, only: LF, WHITESPACE
-    use stdlib_base, only: Strip
+    use stdlib_base, only: strip
     use stdlib_list, only: CharacterList
 
     implicit none
 
     private
-    public :: ReadLine, ReadUnit, ReadFile, String2Lines, Split, Tokenize
+    public :: read_line, read_unit, read_file, split_lines, split, tokenize
 
     integer, parameter :: LEN_BUFFER = 256
 
 contains
-    subroutine ReadLine(unit, line, eof, success)
+    subroutine read_line(unit, line, eof, success)
         integer, intent(in) :: unit
         logical, intent(out), optional :: eof, success
         character(len=:), allocatable, intent(out) :: line
@@ -36,10 +36,10 @@ contains
             end if
             line = line // buffer(:size_)
         end do
-    end subroutine ReadLine
+    end subroutine read_line
 
 
-    function ReadUnit(unit) result(string)
+    function read_unit(unit) result(string)
         integer, intent(in) :: unit
         character(len=:), allocatable :: string
 
@@ -48,15 +48,15 @@ contains
 
         string = ''
         do
-            call ReadLine(unit, line, eof)
+            call read_line(unit, line, eof)
             string = string // line
             if (eof) exit
             string = string // LF
         end do
-    end function ReadUnit
+    end function read_unit
 
 
-    function ReadFile(filename, delete) result(string)
+    function read_file(filename, delete) result(string)
         character(len=*), intent(in) :: filename
         logical, intent(in), optional :: delete
         character(len=:), allocatable :: string
@@ -68,16 +68,16 @@ contains
         if (PRESENT(delete)) delete_ = delete
 
         open(newunit=unit, file=filename)
-        string = ReadUnit(unit)
+        string = read_unit(unit)
         if (delete_) then
             close(unit, status='delete')
         else
             close(unit)
         end if
-    end function ReadFile
+    end function read_file
 
 
-    function String2Lines(string, crop, feed, discard) result(lines)
+    function split_lines(string, crop, feed, discard) result(lines)
         character(len=*), intent(in) :: string
         logical, intent(in), optional :: crop, feed
         character(len=*), intent(in), optional :: discard
@@ -100,7 +100,7 @@ contains
                 i = SCAN(line, discard)
                 if (i > 0) line = line(: i-1)
             end if
-            if (crop_) line = Strip(line)
+            if (crop_) line = strip(line)
             call lines%Append(line)
         end do
         if (crop_) then
@@ -113,48 +113,48 @@ contains
         if (PRESENT(feed)) then
             if (feed) call lines%Append('')
         end if
-    end function String2Lines
+    end function split_lines
 
 
-    function Split(string, delimiter) result(tokens)
-        character(len=*), intent(in) :: string, delimiter
+    function split(string, delim) result(tokens)
+        character(len=*), intent(in) :: string, delim
         type(CharacterList) :: tokens
 
-        integer :: lenDelimiter, i
+        integer :: len_delim, i
         character(len=:), allocatable :: buffer
 
-        lenDelimiter = LEN(delimiter)
+        len_delim = LEN(delim)
         buffer = string
         do
-            i = INDEX(buffer, delimiter)
+            i = INDEX(buffer, delim)
             if (i == 0) exit
             call tokens%Append(buffer(: i-1))
-            buffer = buffer(i+lenDelimiter :)
+            buffer = buffer(i+len_delim :)
         end do
         call tokens%Append(buffer)
-    end function Split
+    end function split
 
 
-    function Tokenize(string, delimiter) result(tokens)
+    function tokenize(string, delim) result(tokens)
         character(len=*), intent(in) :: string
-        character(len=*), intent(in), optional :: delimiter
+        character(len=*), intent(in), optional :: delim
         type(CharacterList) :: tokens
 
         integer :: i
-        character(len=:), allocatable :: buffer, delimiter_
+        character(len=:), allocatable :: buffer, delim_
 
-        delimiter_ = WHITESPACE
-        if (PRESENT(delimiter)) delimiter_ = delimiter
+        delim_ = WHITESPACE
+        if (PRESENT(delim)) delim_ = delim
 
         buffer = string
         do
-            i = VERIFY(buffer, delimiter_)
+            i = VERIFY(buffer, delim_)
             if (i == 0) exit
             buffer = buffer(i:)
-            i = SCAN(buffer, delimiter_)
+            i = SCAN(buffer, delim_)
             if (i == 0) i = LEN(buffer) + 1
             call tokens%Append(buffer(: i-1))
             buffer = buffer(i:)
         end do
-    end function Tokenize
+    end function tokenize
 end module stdlib_io
