@@ -28,5 +28,7 @@ if (${run_result} EQUAL 0)
     string(REGEX MATCH "Maximum kind: +([0-9]+)" match ${output})
     add_compile_definitions(_MAX_KIND=${CMAKE_MATCH_1})
 else ()
-    message(FATAL_ERROR "Failed to determine available kinds of basic data types")
+    message(FATAL_ERROR
+        "Failed to determine available kinds of basic data types"
+    )
 endif ()
