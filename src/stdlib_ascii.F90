@@ -15,7 +15,7 @@ module stdlib_ascii
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
-        upper, lower, strip
+        upper, lower, strip, operator(.in.)
 
     character(len=*), parameter, public :: &
         NUL = achar(0), &  ! null
@@ -78,6 +78,10 @@ module stdlib_ascii
     interface isnumeric
         module procedure isdigit
     end interface isnumeric
+
+    interface operator(.in.)
+        module procedure contains
+    end interface
 
 contains
     ! Iteration over characters may be faster than `verify` on some compilers
@@ -208,4 +212,12 @@ contains
         ! `trim(adjustl(arg))` only works on spaces.
         res = arg(verify(arg, WHITESPACE) : verify(arg, WHITESPACE, .true.))
     end function strip
+
+
+    elemental function contains(substr, str) result(res)
+        character(len=*), intent(in) :: substr, str
+        logical :: res
+
+        res = len(substr) == 0 .or. index(str, substr) > 0
+    end function contains
 end module stdlib_ascii
