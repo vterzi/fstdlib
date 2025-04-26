@@ -9,7 +9,13 @@ module stdlib_ascii
 
     implicit none
 
-    character(len=*), parameter :: &
+    private
+    public :: &
+        isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
+        isidentifier, isprintable, isascii, isupper, islower, &
+        upper, lower, strip
+
+    character(len=*), parameter, public :: &
         NUL = achar(0), &  ! null
         SOH = achar(1), &  ! start of heading
         STX = achar(2), &  ! start of text
@@ -54,5 +60,150 @@ module stdlib_ascii
             // ']^_`{|}~', &
         WHITESPACE = TAB // LF // VT // FF // CR // ' ', &
         PRINTABLE = LETTERS // DIGITS // PUNCTUATION // WHITESPACE, &
+        NONPRINTABLE = NUL // SOH // STX // ETX // EOT // ENQ // ACK // BEL &
+            // BS // SO // SI // DLE // DC1 // DC2 // DC3 // DC4 // NAK &
+            // SYN // ETB // CAN // EM // SUB // ESC // FS // GS // RS // US &
+            // DEL, &
         WORDCHARS = LETTERS // '_' // DIGITS
+
+    integer, parameter :: &
+        CASESHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1))
+
+    interface isdecimal
+        module procedure isdigit
+    end interface isdecimal
+
+    interface isnumeric
+        module procedure isdigit
+    end interface isnumeric
+
+contains
+    ! Iteration over characters may be faster than `verify` on some compilers
+    ! but slower on others.  Therefore, a simpler implementation that uses
+    ! intrinsic procedures is preferred.  An example of the alternative code
+    ! for a slice of the ASCII collating sequence `CHARACTERS`:
+    ! ```
+    ! integer :: i
+    ! character(len=1) :: chr
+    ! res = .false.
+    ! do i = 1, len(arg)
+    !     chr = arg(i:i)
+    !     res = CHARACTERS(:1) <= chr .and. chr <= CHARACTERS(len(CHARACTERS):)
+    !     if (.not. res) exit
+    ! end do
+    ! ```
+
+    elemental function isspace(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = len(arg) > 0 .and. verify(arg, WHITESPACE) == 0
+    end function isspace
+
+
+    elemental function isdigit(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = len(arg) > 0 .and. verify(arg, DIGITS) == 0
+    end function isdigit
+
+
+    elemental function isalpha(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = len(arg) > 0 .and. verify(arg, LETTERS) == 0
+    end function isalpha
+
+
+    elemental function isalnum(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = len(arg) > 0 .and. verify(arg, LETTERS // DIGITS) == 0
+    end function isalnum
+
+
+    elemental function isidentifier(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = len(arg) > 0 &
+            .and. verify(arg, WORDCHARS) == 0 &
+            .and. arg(1:1) /= '_'
+    end function isidentifier
+
+
+    elemental function isprintable(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = verify(arg, PRINTABLE) == 0
+    end function isprintable
+
+
+    elemental function isascii(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = verify(arg, PRINTABLE // NONPRINTABLE) == 0
+    end function isascii
+
+
+    elemental function isupper(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = scan(arg, UPPERCASE) > 0 .and. verify(arg, LOWERCASE) == 0
+    end function isupper
+
+
+    elemental function islower(arg) result(res)
+        character(len=*), intent(in) :: arg
+        logical :: res
+
+        res = scan(arg, LOWERCASE) > 0 .and. verify(arg, UPPERCASE) == 0
+    end function islower
+
+
+    elemental function upper(arg) result(res)
+        character(len=*), intent(in) :: arg
+        character(len=len(arg)) :: res
+
+        integer :: i
+
+        res = arg
+        i = 0
+        do
+            i = scan(res(i + 1 :), LOWERCASE)
+            if (i == 0) exit
+            res(i:i) = achar(iachar(res(i:i)) - CASESHIFT)
+        end do
+    end function upper
+
+
+    elemental function lower(arg) result(res)
+        character(len=*), intent(in) :: arg
+        character(len=len(arg)) :: res
+
+        integer :: i
+
+        res = arg
+        i = 0
+        do
+            i = scan(res(i + 1 :), UPPERCASE)
+            if (i == 0) exit
+            res(i:i) = achar(iachar(res(i:i)) + CASESHIFT)
+        end do
+    end function lower
+
+
+    pure function strip(arg) result(res)
+        character(len=*), intent(in) :: arg
+        character(len=:), allocatable :: res
+
+        ! `trim(adjustl(arg))` only works on spaces.
+        res = arg(verify(arg, WHITESPACE) : verify(arg, WHITESPACE, .true.))
+    end function strip
 end module stdlib_ascii

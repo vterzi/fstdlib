@@ -3,15 +3,13 @@
 
 module stdlib_base
     use stdlib_kinds
-    use stdlib_ascii, only: DIGITS, UPPERCASE, LOWERCASE
 
     implicit none
 
     private
     public :: &
         operator(==), operator(/=), operator(//), operator(+), operator(*), &
-        swap, sort, sorted, &
-        strip, isdigit, isupper, islower, isletter, upper, lower, to_character, &
+        swap, sort, sorted, to_character, &
         getcmd, getcmdarg, getenv
 
 #define _DECL(X) public :: _CAT3(to_,_TYPE_NAME,X)
@@ -31,7 +29,6 @@ module stdlib_base
 
     integer, parameter :: &
         SIMPLE_SORT_SIZE = 5, &
-        LETTER_SHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1)), &
         LEN_BUFFER = 256, &
         MAX_LEN_NUM_STR = 95
 
@@ -306,75 +303,6 @@ contains
 #define _ID _CHARACTER
 #include "../inc/defs.inc"
 #undef _FILE
-
-    pure function strip(arg) result(res)
-        character(len=*), intent(in) :: arg
-        character(len=:), allocatable :: res
-
-        res = TRIM(ADJUSTL(arg))
-    end function strip
-
-
-    elemental function isdigit(arg) result(res)
-        character(len=1), intent(in) :: arg
-        logical :: res
-
-        res = DIGITS(:1) <= arg .and. arg <= DIGITS(LEN(DIGITS):)
-    end function isdigit
-
-
-    elemental function isupper(arg) result(res)
-        character(len=1), intent(in) :: arg
-        logical :: res
-
-        res = UPPERCASE(:1) <= arg .and. arg <= UPPERCASE(LEN(UPPERCASE):)
-    end function isupper
-
-
-    elemental function islower(arg) result(res)
-        character(len=1), intent(in) :: arg
-        logical :: res
-
-        res = LOWERCASE(:1) <= arg .and. arg <= LOWERCASE(LEN(LOWERCASE):)
-    end function islower
-
-
-    elemental function isletter(arg) result(res)
-        character(len=1), intent(in) :: arg
-        logical :: res
-
-        res = isupper(arg) .or. islower(arg)
-    end function isletter
-
-
-    elemental function upper(arg) result(res)
-        character(len=*), intent(in) :: arg
-        character(len=LEN(arg)) :: res
-
-        integer :: i
-        character(len=1) :: symbol
-
-        res = arg
-        do i = 1, LEN(res)
-            symbol = res(i:i)
-            if (islower(symbol)) res(i:i) = ACHAR(IACHAR(symbol) - LETTER_SHIFT)
-        end do
-    end function upper
-
-
-    elemental function lower(arg) result(res)
-        character(len=*), intent(in) :: arg
-        character(len=LEN(arg)) :: res
-
-        integer :: i
-        character(len=1) :: symbol
-
-        res = arg
-        do i = 1, LEN(res)
-            symbol = res(i:i)
-            if (isupper(symbol)) res(i:i) = ACHAR(IACHAR(symbol) + LETTER_SHIFT)
-        end do
-    end function lower
 
 
     function getcmd(success) result(val)

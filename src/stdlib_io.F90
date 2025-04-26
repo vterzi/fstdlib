@@ -1,8 +1,7 @@
 module stdlib_io
     use, intrinsic :: ISO_FORTRAN_ENV, only: IOSTAT_END, IOSTAT_EOR
     use stdlib_kinds
-    use stdlib_ascii, only: LF, WHITESPACE
-    use stdlib_base, only: strip
+    use stdlib_ascii, only: LF, WHITESPACE, strip
     use stdlib_list, only: CharacterList
 
     implicit none
