@@ -9,7 +9,7 @@ program kinds
     print *, 'INTEGER kinds:'
     k = 0
     do i = 1, 64
-        sk = SELECTED_INT_KIND(i)
+        sk = selected_int_kind(i)
         if (i > 1 .and. sk /= k) then
             select case (i - 1)
             case (2)
@@ -28,7 +28,7 @@ program kinds
             print *, c, k, i - 1
         end if
         k = sk
-        mk = MAX(mk, k)
+        mk = max(mk, k)
     end do
 
     print *, ''
@@ -36,7 +36,7 @@ program kinds
     print *, 'REAL kinds:'
     k = 0
     do i = 1, 64
-        sk = SELECTED_REAL_KIND(i)
+        sk = selected_real_kind(i)
         if (i > 1 .and. sk /= k) then
             select case (i - 1)
             case (3)
@@ -55,27 +55,27 @@ program kinds
             print *, c, k, i - 1
         end if
         k = sk
-        mk = MAX(mk, k)
+        mk = max(mk, k)
     end do
 
     print *, ''
 
     print *, 'CHARACTER kinds:'
-    k = SELECTED_CHAR_KIND('ASCII')
+    k = selected_char_kind('ASCII')
     if (k > 0) print *, 'ASCII', k, '"ASCII"'
-    mk = MAX(mk, k)
-    k = SELECTED_CHAR_KIND('ISO_10646')
+    mk = max(mk, k)
+    k = selected_char_kind('ISO_10646')
     if (k > 0) print *, 'UCS4 ', k, '"ISO_10646"'
-    mk = MAX(mk, k)
+    mk = max(mk, k)
 
     print *, ''
 
     print *, 'Defalut kinds:'
-    print *, 'LOGICAL  ', KIND(.false.)
-    print *, 'INTEGER  ', KIND(0)
-    print *, 'REAL     ', KIND(0.)
-    print *, 'COMPLEX  ', KIND((0., 0.))
-    print *, 'CHARACTER', KIND('')
+    print *, 'LOGICAL  ', kind(.false.)
+    print *, 'INTEGER  ', kind(0)
+    print *, 'REAL     ', kind(0.)
+    print *, 'COMPLEX  ', kind((0., 0.))
+    print *, 'CHARACTER', kind('')
 
     print *, ''
 
