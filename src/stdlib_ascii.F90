@@ -11,6 +11,8 @@ module stdlib_ascii
 
     private
     public :: &
+        C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
+        C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
         upper, lower, strip
