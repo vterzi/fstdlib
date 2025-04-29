@@ -9,7 +9,7 @@ module stdlib_base
     private
     public :: &
         operator(==), operator(/=), operator(//), operator(+), operator(*), &
-        swap, sort, sorted, to_character, &
+        swap, default_assign, sort, sorted, to_character, &
         getcmd, getcmdarg, getenv
 
 #define _DECL(X) public :: _CAT3(to_,_TYPE_NAME,X)
@@ -50,6 +50,21 @@ module stdlib_base
 #define _ID2 _LOGICAL
 #include "../inc/decls.inc"
     end interface
+#undef _OP
+
+#define _OP default_assign
+    interface _OP
+#define _ID _LOGICAL
+#include "../inc/decls.inc"
+#define _ID _INTEGER
+#include "../inc/decls.inc"
+#define _ID _REAL
+#include "../inc/decls.inc"
+#define _ID _COMPLEX
+#include "../inc/decls.inc"
+#define _ID _CHARACTER
+#include "../inc/decls.inc"
+    end interface _OP
 #undef _OP
 
 #define _OP to_character
@@ -201,6 +216,19 @@ contains
 #define _FILE "../base/cmp.inc"
 #define _ID1 _LOGICAL
 #define _ID2 _LOGICAL
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../base/default_assign.inc"
+#define _ID _LOGICAL
+#include "../inc/defs.inc"
+#define _ID _INTEGER
+#include "../inc/defs.inc"
+#define _ID _REAL
+#include "../inc/defs.inc"
+#define _ID _COMPLEX
+#include "../inc/defs.inc"
+#define _ID _CHARACTER
 #include "../inc/defs.inc"
 #undef _FILE
 
