@@ -1,8 +1,8 @@
 module stdlib
     use stdlib_kinds
-    use stdlib_ascii
-    use stdlib_unittest
     use stdlib_base
+    use stdlib_string
+    use stdlib_unittest
     use stdlib_list
     use stdlib_io
 

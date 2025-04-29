@@ -1,7 +1,7 @@
 set(SRC
     stdlib.F90
     stdlib_kinds.F90
-    stdlib_ascii.F90
+    string/stdlib_string.F90
     unittest/stdlib_unittest.F90
     base/stdlib_base.F90
     list/stdlib_list.F90

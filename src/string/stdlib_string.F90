@@ -1,11 +1,12 @@
 ! ASCII characters
 
 
-module stdlib_ascii
+module stdlib_string
     use, intrinsic :: iso_c_binding, only: &
         C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN
     use stdlib_kinds
+    use stdlib_base, only: default_assign
 
     implicit none
 
@@ -15,7 +16,7 @@ module stdlib_ascii
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
-        upper, lower, strip, operator(.in.)
+        upper, lower, strip, operator(.in.), startswith, endswith
 
     character(len=*), parameter, public :: &
         NUL = achar(0), &  ! null
@@ -78,6 +79,10 @@ module stdlib_ascii
     interface isnumeric
         module procedure isdigit
     end interface isnumeric
+
+    interface casefold
+        module procedure lower
+    end interface casefold
 
     interface operator(.in.)
         module procedure contains
@@ -205,6 +210,15 @@ contains
     end function lower
 
 
+    elemental function capitalize(arg) result(res)
+        character(len=*), intent(in) :: arg
+        character(len=len(arg)) :: res
+
+        res = lower(arg)
+        if (len(res) > 0) res(1:1) = upper(res(1:1))
+    end function capitalize
+
+
     pure function strip(arg) result(res)
         character(len=*), intent(in) :: arg
         character(len=:), allocatable :: res
@@ -220,4 +234,39 @@ contains
 
         res = len(substr) == 0 .or. index(str, substr) > 0
     end function contains
-end module stdlib_ascii
+
+
+    elemental function startswith(str, substr) result(res)
+        character(len=*), intent(in) :: str, substr
+        logical :: res
+
+        res = str(:len(substr)) == substr
+    end function startswith
+
+
+    elemental function endswith(str, substr) result(res)
+        character(len=*), intent(in) :: str, substr
+        logical :: res
+
+        res = str(len(str) - len(substr) + 1 : ) == substr
+    end function endswith
+
+
+    elemental function center(str, width, fillchar) result(res)
+        character(len=*), intent(in) :: str
+        integer, intent(in) :: width
+        character(len=1), intent(in), optional :: fillchar
+        character(len=max(len(str), width)) :: res
+
+        integer :: diff
+        character(len=1) :: chr
+
+        call default_assign(chr, ' ', fillchar)
+        diff = width - len(str)
+        if (diff > 0) then
+            res = repeat(chr, diff / 2) // str // repeat(chr, (diff + 1) / 2)
+        else
+            res = str
+        end if
+    end function center
+end module stdlib_string
