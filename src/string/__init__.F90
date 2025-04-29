@@ -14,8 +14,10 @@ module stdlib_string
     public :: &
         C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
+        operator(//), operator(+), operator(*), &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
+        to_character, &
         upper, lower, strip, operator(.in.), startswith, endswith
 
     !--------------------------------------------------------------------------
@@ -74,9 +76,137 @@ module stdlib_string
     !--------------------------------------------------------------------------
 
     integer, parameter :: &
-        CASESHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1))
+        CASESHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1)), &
+        MAX_LEN_NUM_STR = 95
 
     !--------------------------------------------------------------------------
+
+#include "../inc/proc.inc"
+#define _DECL_ONE(X) module procedure :: _UNARY(X)
+#define _DECL_TWO(X,Y) module procedure :: _BINARY(X,Y)
+
+#define _DECL(X) public :: _CAT3(to_,_TYPE_NAME,X)
+#define _ID _LOGICAL
+#define _DEFAULT
+#include "../inc/decl.inc"
+#define _ID _INTEGER
+#define _DEFAULT
+#include "../inc/decl.inc"
+#define _ID _REAL
+#define _DEFAULT
+#include "../inc/decl.inc"
+#define _ID _COMPLEX
+#define _DEFAULT
+#include "../inc/decl.inc"
+#undef _DECL
+
+#define _OP to_character
+    interface _OP
+#define _ID _LOGICAL
+#include "../inc/decls.inc"
+#define _ID _INTEGER
+#include "../inc/decls.inc"
+#define _ID _REAL
+#include "../inc/decls.inc"
+#define _ID _COMPLEX
+#include "../inc/decls.inc"
+#define _ID _CHARACTER
+#include "../inc/decls.inc"
+    end interface _OP
+#undef _OP
+
+#define _OP cat
+    interface operator(//)
+#define _ID1 _LOGICAL
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _LOGICAL
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _INTEGER
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _REAL
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _REAL
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _COMPLEX
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _COMPLEX
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+    end interface
+#undef _OP
+
+#define _OP join
+    interface operator(+)
+#define _ID1 _CHARACTER
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY1
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _LOGICAL
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _LOGICAL
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _INTEGER
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _REAL
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _REAL
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+#define _ID1 _COMPLEX
+#define _ID2 _CHARACTER
+#define _DEFAULT_ONLY2
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _COMPLEX
+#define _DEFAULT_ONLY1
+#include "../inc/decls.inc"
+    end interface
+#undef _OP
+
+#define _OP mul
+    interface operator(*)
+#define _ID1 _INTEGER
+#define _ID2 _CHARACTER
+#include "../inc/decls.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#include "../inc/decls.inc"
+    end interface
+#undef _OP
+
+#undef _DECL_ONE
+#undef _DECL_TWO
 
     interface isdecimal
         module procedure isdigit
@@ -96,6 +226,86 @@ module stdlib_string
 
     !--------------------------------------------------------------------------
 contains
+    !--------------------------------------------------------------------------
+
+#define _FILE "../string/obj2char.inc"
+#define _ID _LOGICAL
+#include "../inc/defs.inc"
+#define _ID _INTEGER
+#include "../inc/defs.inc"
+#define _ID _REAL
+#include "../inc/defs.inc"
+#define _ID _COMPLEX
+#include "../inc/defs.inc"
+#define _ID _CHARACTER
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/char2obj.inc"
+#define _ID _LOGICAL
+#define _DEFAULT
+#include "../inc/defs.inc"
+#define _ID _INTEGER
+#define _DEFAULT
+#include "../inc/defs.inc"
+#define _ID _REAL
+#define _DEFAULT
+#include "../inc/defs.inc"
+#define _ID _COMPLEX
+#define _DEFAULT
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/cat.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _LOGICAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _REAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _COMPLEX
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/join_s.inc"
+#define _ID _CHARACTER
+#define _DEFAULT_ONLY
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/join.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _LOGICAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _INTEGER
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _REAL
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#define _ID1 _CHARACTER
+#define _ID2 _COMPLEX
+#define _DEFAULT_ONLY1
+#include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/mul.inc"
+#define _ID1 _INTEGER
+#define _ID2 _CHARACTER
+#include "../inc/defs.inc"
+#undef _FILE
+
     !--------------------------------------------------------------------------
     ! Iteration over characters may be faster than `verify` on some compilers
     ! but slower on others.  Therefore, a simpler implementation that uses

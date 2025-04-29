@@ -8,29 +8,13 @@ module stdlib_base
 
     private
     public :: &
-        operator(==), operator(/=), operator(//), operator(+), operator(*), &
-        swap, default_assign, sort, sorted, to_character, &
+        operator(==), operator(/=), &
+        swap, default_assign, sort, sorted, &
         getcmd, getcmdarg, getenv
-
-#define _DECL(X) public :: _CAT3(to_,_TYPE_NAME,X)
-#define _ID _LOGICAL
-#define _DEFAULT
-#include "../inc/decl.inc"
-#define _ID _INTEGER
-#define _DEFAULT
-#include "../inc/decl.inc"
-#define _ID _REAL
-#define _DEFAULT
-#include "../inc/decl.inc"
-#define _ID _COMPLEX
-#define _DEFAULT
-#include "../inc/decl.inc"
-#undef _DECL
 
     integer, parameter :: &
         SIMPLE_SORT_SIZE = 5, &
-        LEN_BUFFER = 256, &
-        MAX_LEN_NUM_STR = 95
+        LEN_BUFFER = 256
 
 #include "../inc/proc.inc"
 #define _DECL_ONE(X) module procedure :: _UNARY(X)
@@ -65,111 +49,6 @@ module stdlib_base
 #define _ID _CHARACTER
 #include "../inc/decls.inc"
     end interface _OP
-#undef _OP
-
-#define _OP to_character
-    interface _OP
-#define _ID _LOGICAL
-#include "../inc/decls.inc"
-#define _ID _INTEGER
-#include "../inc/decls.inc"
-#define _ID _REAL
-#include "../inc/decls.inc"
-#define _ID _COMPLEX
-#include "../inc/decls.inc"
-#define _ID _CHARACTER
-#include "../inc/decls.inc"
-    end interface _OP
-#undef _OP
-
-#define _OP cat
-    interface operator(//)
-#define _ID1 _LOGICAL
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _LOGICAL
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _INTEGER
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _INTEGER
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _REAL
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _REAL
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _COMPLEX
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _COMPLEX
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-    end interface
-#undef _OP
-
-#define _OP join
-    interface operator(+)
-#define _ID1 _CHARACTER
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY1
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _LOGICAL
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _LOGICAL
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _INTEGER
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _INTEGER
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _REAL
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _REAL
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-#define _ID1 _COMPLEX
-#define _ID2 _CHARACTER
-#define _DEFAULT_ONLY2
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _COMPLEX
-#define _DEFAULT_ONLY1
-#include "../inc/decls.inc"
-    end interface
-#undef _OP
-
-#define _OP mul
-    interface operator(*)
-#define _ID1 _INTEGER
-#define _ID2 _CHARACTER
-#include "../inc/decls.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _INTEGER
-#include "../inc/decls.inc"
-    end interface
 #undef _OP
 
 #define _OP swap
@@ -229,84 +108,6 @@ contains
 #define _ID _COMPLEX
 #include "../inc/defs.inc"
 #define _ID _CHARACTER
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/obj2char.inc"
-#define _ID _LOGICAL
-#include "../inc/defs.inc"
-#define _ID _INTEGER
-#include "../inc/defs.inc"
-#define _ID _REAL
-#include "../inc/defs.inc"
-#define _ID _COMPLEX
-#include "../inc/defs.inc"
-#define _ID _CHARACTER
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/char2obj.inc"
-#define _ID _LOGICAL
-#define _DEFAULT
-#include "../inc/defs.inc"
-#define _ID _INTEGER
-#define _DEFAULT
-#include "../inc/defs.inc"
-#define _ID _REAL
-#define _DEFAULT
-#include "../inc/defs.inc"
-#define _ID _COMPLEX
-#define _DEFAULT
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/cat.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _LOGICAL
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _INTEGER
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _REAL
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _COMPLEX
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/join_s.inc"
-#define _ID _CHARACTER
-#define _DEFAULT_ONLY
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/join.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _LOGICAL
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _INTEGER
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _REAL
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#define _ID1 _CHARACTER
-#define _ID2 _COMPLEX
-#define _DEFAULT_ONLY1
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/mul.inc"
-#define _ID1 _INTEGER
-#define _ID2 _CHARACTER
 #include "../inc/defs.inc"
 #undef _FILE
 
