@@ -18,6 +18,8 @@ module stdlib_string
         isidentifier, isprintable, isascii, isupper, islower, &
         upper, lower, strip, operator(.in.), startswith, endswith
 
+    !--------------------------------------------------------------------------
+
     character(len=*), parameter, public :: &
         NUL = achar(0), &  ! null
         SOH = achar(1), &  ! start of heading
@@ -69,8 +71,12 @@ module stdlib_string
             // DEL, &
         WORDCHARS = LETTERS // '_' // DIGITS
 
+    !--------------------------------------------------------------------------
+
     integer, parameter :: &
         CASESHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1))
+
+    !--------------------------------------------------------------------------
 
     interface isdecimal
         module procedure isdigit
@@ -88,7 +94,9 @@ module stdlib_string
         module procedure contains
     end interface
 
+    !--------------------------------------------------------------------------
 contains
+    !--------------------------------------------------------------------------
     ! Iteration over characters may be faster than `verify` on some compilers
     ! but slower on others.  Therefore, a simpler implementation that uses
     ! intrinsic procedures is preferred.  An example of the alternative code
@@ -177,6 +185,7 @@ contains
         res = scan(arg, LOWERCASE) > 0 .and. verify(arg, UPPERCASE) == 0
     end function islower
 
+    !--------------------------------------------------------------------------
 
     elemental function upper(arg) result(res)
         character(len=*), intent(in) :: arg
@@ -218,6 +227,7 @@ contains
         if (len(res) > 0) res(1:1) = upper(res(1:1))
     end function capitalize
 
+    !--------------------------------------------------------------------------
 
     pure function strip(arg) result(res)
         character(len=*), intent(in) :: arg
@@ -227,6 +237,26 @@ contains
         res = arg(verify(arg, WHITESPACE) : verify(arg, WHITESPACE, .true.))
     end function strip
 
+
+    elemental function center(str, width, fillchar) result(res)
+        character(len=*), intent(in) :: str
+        integer, intent(in) :: width
+        character(len=1), intent(in), optional :: fillchar
+        character(len=max(len(str), width)) :: res
+
+        integer :: diff
+        character(len=1) :: chr
+
+        call default_assign(chr, ' ', fillchar)
+        diff = width - len(str)
+        if (diff > 0) then
+            res = repeat(chr, diff / 2) // str // repeat(chr, (diff + 1) / 2)
+        else
+            res = str
+        end if
+    end function center
+
+    !--------------------------------------------------------------------------
 
     elemental function contains(substr, str) result(res)
         character(len=*), intent(in) :: substr, str
@@ -251,22 +281,5 @@ contains
         res = str(len(str) - len(substr) + 1 : ) == substr
     end function endswith
 
-
-    elemental function center(str, width, fillchar) result(res)
-        character(len=*), intent(in) :: str
-        integer, intent(in) :: width
-        character(len=1), intent(in), optional :: fillchar
-        character(len=max(len(str), width)) :: res
-
-        integer :: diff
-        character(len=1) :: chr
-
-        call default_assign(chr, ' ', fillchar)
-        diff = width - len(str)
-        if (diff > 0) then
-            res = repeat(chr, diff / 2) // str // repeat(chr, (diff + 1) / 2)
-        else
-            res = str
-        end if
-    end function center
+    !--------------------------------------------------------------------------
 end module stdlib_string
