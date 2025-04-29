@@ -1,11 +1,11 @@
 set(SRC
     stdlib.F90
-    stdlib_kinds.F90
-    string/stdlib_string.F90
-    unittest/stdlib_unittest.F90
-    base/stdlib_base.F90
-    list/stdlib_list.F90
-    stdlib_io.F90
+    kinds.F90
+    string/__init__.F90
+    unittest/__init__.F90
+    base/__init__.F90
+    list/__init__.F90
+    io.F90
 )
 
 add_library(stdlib SHARED "${SRC}")
