@@ -14,11 +14,11 @@ module stdlib_string
     public :: &
         C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
-        operator(//), operator(+), operator(*), &
+        operator(//), operator(+), operator(*), operator(.in.), &
+        to_character, &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
-        to_character, &
-        upper, lower, strip, operator(.in.), startswith, endswith
+        upper, lower, casefold, capitalize, strip, center, startswith, endswith
 
     !--------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ module stdlib_string
     end interface
 #undef _OP
 
-#define _OP join
+#define _OP add
     interface operator(+)
 #define _ID1 _CHARACTER
 #define _ID2 _CHARACTER
@@ -228,7 +228,7 @@ module stdlib_string
 contains
     !--------------------------------------------------------------------------
 
-#define _FILE "../string/obj2char.inc"
+#define _FILE "../string/to_character.inc"
 #define _ID _LOGICAL
 #include "../inc/defs.inc"
 #define _ID _INTEGER
@@ -241,7 +241,7 @@ contains
 #include "../inc/defs.inc"
 #undef _FILE
 
-#define _FILE "../string/char2obj.inc"
+#define _FILE "../string/to_type.inc"
 #define _ID _LOGICAL
 #define _DEFAULT
 #include "../inc/defs.inc"
@@ -275,13 +275,13 @@ contains
 #include "../inc/defs.inc"
 #undef _FILE
 
-#define _FILE "../string/join_s.inc"
+#define _FILE "../string/add_s.inc"
 #define _ID _CHARACTER
 #define _DEFAULT_ONLY
 #include "../inc/defs.inc"
 #undef _FILE
 
-#define _FILE "../string/join.inc"
+#define _FILE "../string/add.inc"
 #define _ID1 _CHARACTER
 #define _ID2 _LOGICAL
 #define _DEFAULT_ONLY1
