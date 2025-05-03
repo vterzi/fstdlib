@@ -1,5 +1,6 @@
 ! {"id.inc"(_ID1, _ID2)} + () -(_PROC)> ()
-! Define space-separated concatenation functions for the character type with other basic data types.  `_ID1` must be `_CHARACTER`.
+! Define space-separated concatenation functions for the character type with
+! other basic data types.  `_ID1` must be `_CHARACTER`.
 
 
 #define _PROC _CAT3(_LABEL1,_add_,_LABEL2)

@@ -76,8 +76,8 @@ module stdlib_string
     !--------------------------------------------------------------------------
 
     integer, parameter :: &
-        CASESHIFT = IACHAR(LOWERCASE(:1)) - IACHAR(UPPERCASE(:1)), &
-        MAX_LEN_NUM_STR = 95
+        CASESHIFT = iachar(LOWERCASE(:1)) - iachar(UPPERCASE(:1)), &
+        MAX_LEN_NUM_STR = 94
 
     !--------------------------------------------------------------------------
 
@@ -237,6 +237,9 @@ contains
 #include "../inc/defs.inc"
 #define _ID _COMPLEX
 #include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/to_character_s.inc"
 #define _ID _CHARACTER
 #include "../inc/defs.inc"
 #undef _FILE
@@ -454,13 +457,13 @@ contains
         character(len=1), intent(in), optional :: fillchar
         character(len=max(len(str), width)) :: res
 
-        integer :: diff
+        integer :: pad
         character(len=1) :: chr
 
         call assign_optional(chr, ' ', fillchar)
-        diff = width - len(str)
-        if (diff > 0) then
-            res = repeat(chr, diff / 2) // str // repeat(chr, (diff + 1) / 2)
+        pad = width - len(str)
+        if (pad > 0) then
+            res = repeat(chr, pad / 2) // str // repeat(chr, (pad + 1) / 2)
         else
             res = str
         end if
