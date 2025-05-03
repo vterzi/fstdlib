@@ -9,7 +9,7 @@ module stdlib_base
     private
     public :: &
         operator(==), operator(/=), &
-        swap, default_assign, &
+        swap, assign_optional, &
         getcmd, getcmdarg, getenv
 
 #include "../inc/proc.inc"
@@ -32,7 +32,7 @@ module stdlib_base
     end interface
 #undef _OP
 
-#define _OP default_assign
+#define _OP assign_optional
     interface _OP
 #define _ID _LOGICAL
 #include "../inc/decls.inc"
@@ -72,7 +72,7 @@ contains
 #include "../inc/defs.inc"
 #undef _FILE
 
-#define _FILE "../base/default_assign.inc"
+#define _FILE "../base/assign_optional.inc"
 #define _ID _LOGICAL
 #include "../inc/defs.inc"
 #define _ID _INTEGER

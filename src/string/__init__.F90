@@ -6,7 +6,7 @@ module stdlib_string
         C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN
     use stdlib_kinds
-    use stdlib_base, only: default_assign
+    use stdlib_base, only: assign_optional
 
     implicit none
 
@@ -457,7 +457,7 @@ contains
         integer :: diff
         character(len=1) :: chr
 
-        call default_assign(chr, ' ', fillchar)
+        call assign_optional(chr, ' ', fillchar)
         diff = width - len(str)
         if (diff > 0) then
             res = repeat(chr, diff / 2) // str // repeat(chr, (diff + 1) / 2)
