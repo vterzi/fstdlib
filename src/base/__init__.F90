@@ -9,12 +9,8 @@ module stdlib_base
     private
     public :: &
         operator(==), operator(/=), &
-        swap, default_assign, sort, sorted, &
+        swap, default_assign, &
         getcmd, getcmdarg, getenv
-
-    integer, parameter :: &
-        SIMPLE_SORT_SIZE = 5, &
-        LEN_BUFFER = 256
 
 #include "../inc/proc.inc"
 #define _DECL_ONE(X) module procedure :: _UNARY(X)
@@ -66,28 +62,6 @@ module stdlib_base
     end interface _OP
 #undef _OP
 
-#define _OP sort
-    interface _OP
-#define _ID _INTEGER
-#include "../inc/decls.inc"
-#define _ID _REAL
-#include "../inc/decls.inc"
-#define _ID _CHARACTER
-#include "../inc/decls.inc"
-    end interface _OP
-#undef _OP
-
-#define _OP sorted
-    interface _OP
-#define _ID _INTEGER
-#include "../inc/decls.inc"
-#define _ID _REAL
-#include "../inc/decls.inc"
-#define _ID _CHARACTER
-#include "../inc/decls.inc"
-    end interface _OP
-#undef _OP
-
 #undef _DECL_ONE
 #undef _DECL_TWO
 
@@ -119,15 +93,6 @@ contains
 #define _ID _REAL
 #include "../inc/defs.inc"
 #define _ID _COMPLEX
-#include "../inc/defs.inc"
-#define _ID _CHARACTER
-#include "../inc/defs.inc"
-#undef _FILE
-
-#define _FILE "../base/sort.inc"
-#define _ID _INTEGER
-#include "../inc/defs.inc"
-#define _ID _REAL
 #include "../inc/defs.inc"
 #define _ID _CHARACTER
 #include "../inc/defs.inc"

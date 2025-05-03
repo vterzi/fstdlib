@@ -20,11 +20,11 @@ pure subroutine _PROC(array, back)
 
 contains
 #define _SUBPROC sort_fore
-#include "../base/sort_proc.inc"
+#include "../array/sort_proc.inc"
 
 #define _SUBPROC sort_back
 #define _BACK
-#include "../base/sort_proc.inc"
+#include "../array/sort_proc.inc"
 end subroutine _PROC
 #undef _PROC
 
