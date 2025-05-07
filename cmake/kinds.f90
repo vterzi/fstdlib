@@ -1,83 +1,63 @@
 program kinds
     implicit none
 
-    integer :: i, k, sk, mk
-    character(len=3) :: c
+    integer :: arg, prev_kind, curr_kind
+    character(len=3) :: kind_label
 
-    mk = 0
-
-    print *, 'INTEGER kinds:'
-    k = 0
-    do i = 1, 64
-        sk = selected_int_kind(i)
-        if (i > 1 .and. sk /= k) then
-            select case (i - 1)
+    prev_kind = -1
+    do arg = 0, 64
+        curr_kind = selected_int_kind(arg)
+        if (prev_kind >= 0 .and. curr_kind /= prev_kind) then
+            select case (arg - 1)
             case (2)
-                c = 'K1'
+                kind_label = 'K1'
             case (4)
-                c = 'K2'
+                kind_label = 'K2'
             case (9)
-                c = 'K4'
+                kind_label = 'K4'
             case (18)
-                c = 'K8'
+                kind_label = 'K8'
             case (38)
-                c = 'K16'
+                kind_label = 'K16'
             case default
-                c = '???'
+                kind_label = '???'
             end select
-            print *, c, k, i - 1
+            print *, kind_label // '=', prev_kind
         end if
-        k = sk
-        mk = max(mk, k)
+        prev_kind = curr_kind
     end do
 
-    print *, ''
-
-    print *, 'REAL kinds:'
-    k = 0
-    do i = 1, 64
-        sk = selected_real_kind(i)
-        if (i > 1 .and. sk /= k) then
-            select case (i - 1)
+    prev_kind = -1
+    do arg = 0, 64
+        curr_kind = selected_real_kind(arg)
+        if (prev_kind >= 0 .and. curr_kind /= prev_kind) then
+            select case (arg - 1)
             case (3)
-                c = 'HP'
+                kind_label = 'HP'
             case (6)
-                c = 'SP'
+                kind_label = 'SP'
             case (15)
-                c = 'DP'
+                kind_label = 'DP'
             case (18)
-                c = 'XDP'
+                kind_label = 'XDP'
             case (31, 33)
-                c = 'QP'
+                kind_label = 'QP'
             case default
-                c = '???'
+                kind_label = '???'
             end select
-            print *, c, k, i - 1
+            print *, kind_label // '=', prev_kind
         end if
-        k = sk
-        mk = max(mk, k)
+        prev_kind = curr_kind
     end do
 
-    print *, ''
+    curr_kind = selected_char_kind('ASCII')
+    if (curr_kind >= 0) print *, 'ASCII=', curr_kind
+    curr_kind = selected_char_kind('ISO_10646')
+    if (curr_kind >= 0) print *, 'UCS4=', curr_kind
 
-    print *, 'CHARACTER kinds:'
-    k = selected_char_kind('ASCII')
-    if (k > 0) print *, 'ASCII', k, '"ASCII"'
-    mk = max(mk, k)
-    k = selected_char_kind('ISO_10646')
-    if (k > 0) print *, 'UCS4 ', k, '"ISO_10646"'
-    mk = max(mk, k)
-
-    print *, ''
-
-    print *, 'Defalut kinds:'
-    print *, 'LOGICAL  ', kind(.false.)
-    print *, 'INTEGER  ', kind(0)
-    print *, 'REAL     ', kind(0.)
-    print *, 'COMPLEX  ', kind((0., 0.))
-    print *, 'CHARACTER', kind('')
-
-    print *, ''
-
-    print *, 'Maximum kind:', mk
+    print *, 'LK=', kind(.false.)
+    print *, 'IK=', kind(0)
+    print *, 'RK=', kind(0.)
+    print *, 'CK=', kind((0, 0))
+    print *, 'SK=', kind('')
 end program kinds

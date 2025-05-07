@@ -12,6 +12,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 
 include(cmake/kinds.cmake)
+include(cmake/props.cmake)
 
 add_subdirectory(src)
 add_subdirectory(tests)
