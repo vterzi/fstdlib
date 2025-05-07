@@ -365,7 +365,7 @@ contains
 
         res = len(arg) > 0 &
             .and. verify(arg, WORDCHARS) == 0 &
-            .and. arg(1:1) /= '_'
+            .and. scan(arg(1:1), DIGITS // '_') == 0
     end function isidentifier
 
 
