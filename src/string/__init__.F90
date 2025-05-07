@@ -14,8 +14,6 @@ module stdlib_string
     public :: &
         C_NULL_CHAR, C_ALERT, C_BACKSPACE, C_HORIZONTAL_TAB, C_NEW_LINE, &
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN, &
-        operator(//), operator(+), operator(*), operator(.in.), &
-        to_character, &
         isspace, isdigit, isdecimal, isnumeric, isalpha, isalnum, &
         isidentifier, isprintable, isascii, isupper, islower, &
         upper, lower, casefold, capitalize, strip, center, startswith, endswith
@@ -101,6 +99,7 @@ module stdlib_string
 #undef _DECL
 
 #define _OP to_character
+    public :: _OP
     interface _OP
 #define _ID _LOGICAL
 #include "../inc/decls.inc"
@@ -116,6 +115,7 @@ module stdlib_string
 #undef _OP
 
 #define _OP cat
+    public :: operator(//)
     interface operator(//)
 #define _ID1 _LOGICAL
 #define _ID2 _CHARACTER
@@ -153,6 +153,7 @@ module stdlib_string
 #undef _OP
 
 #define _OP add
+    public :: operator(+)
     interface operator(+)
 #define _ID1 _CHARACTER
 #define _ID2 _CHARACTER
@@ -195,6 +196,7 @@ module stdlib_string
 #undef _OP
 
 #define _OP mul
+    public :: operator(*)
     interface operator(*)
 #define _ID1 _INTEGER
 #define _ID2 _CHARACTER

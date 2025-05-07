@@ -7,13 +7,13 @@ module stdlib_math
     implicit none
 
     private
-    public :: dec_digits
 
 #include "../inc/proc.inc"
 #define _DECL_ONE(X) module procedure :: _UNARY(X)
 #define _DECL_TWO(X,Y) module procedure :: _BINARY(X,Y)
 
 #define _OP dec_digits
+    public :: _OP
     interface _OP
 #define _ID _INTEGER
 #include "../inc/decls.inc"
