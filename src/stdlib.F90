@@ -1,6 +1,7 @@
 module stdlib
     use stdlib_kinds
     use stdlib_base
+    use stdlib_math
     use stdlib_string
     use stdlib_array
     use stdlib_unittest
