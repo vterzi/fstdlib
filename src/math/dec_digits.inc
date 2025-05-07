@@ -1,5 +1,5 @@
 ! {"id.inc"(_ID)} + () -(_PROC)> ()
-! Define conversion functions from the character type to other basic data types.
+! Define functions that determine the number of decimal digits of integers.
 
 
 #define _PROC _CAT(dec_digits_,_LABEL)
