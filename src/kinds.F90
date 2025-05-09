@@ -29,66 +29,41 @@ module stdlib_kinds
 
     ! logical, integer (K = kind)
 #ifdef _K1
-    integer, parameter, public :: &
-        K1 = _K1, &
-        MAX_LEN_INTEGER_K1_STR = _MAX_LEN_INTEGER_K1_STR
+    integer, parameter, public :: K1 = _K1
 #endif
 #ifdef _K2
-    integer, parameter, public :: &
-        K2 = _K2, &
-        MAX_LEN_INTEGER_K2_STR = _MAX_LEN_INTEGER_K2_STR
+    integer, parameter, public :: K2 = _K2
 #endif
 #ifdef _K4
-    integer, parameter, public :: &
-        K4 = _K4, &
-        MAX_LEN_INTEGER_K4_STR = _MAX_LEN_INTEGER_K4_STR
+    integer, parameter, public :: K4 = _K4
 #endif
 #ifdef _K8
-    integer, parameter, public :: &
-        K8 = _K8, &
-        MAX_LEN_INTEGER_K8_STR = _MAX_LEN_INTEGER_K8_STR
+    integer, parameter, public :: K8 = _K8
 #endif
 #ifdef _K16
-    integer, parameter, public :: &
-        K16 = _K16, &
-        MAX_LEN_INTEGER_K16_STR = _MAX_LEN_INTEGER_K16_STR
+    integer, parameter, public :: K16 = _K16
 #endif
 
     ! real, complex (P = precision)
 #ifdef _HP
     ! half
-    integer, parameter, public :: &
-        HP = _HP, &
-        MAX_LEN_REAL_HP_STR = _MAX_LEN_REAL_HP_STR, &
-        MAX_LEN_COMPLEX_HP_STR = _MAX_LEN_COMPLEX_HP_STR
+    integer, parameter, public :: HP = _HP
 #endif
 #ifdef _SP
     ! single
-    integer, parameter, public :: &
-        SP = _SP, &
-        MAX_LEN_REAL_SP_STR = _MAX_LEN_REAL_SP_STR, &
-        MAX_LEN_COMPLEX_SP_STR = _MAX_LEN_COMPLEX_SP_STR
+    integer, parameter, public :: SP = _SP
 #endif
 #ifdef _DP
     ! double
-    integer, parameter, public :: &
-        DP = _DP, &
-        MAX_LEN_REAL_DP_STR = _MAX_LEN_REAL_DP_STR, &
-        MAX_LEN_COMPLEX_DP_STR = _MAX_LEN_COMPLEX_DP_STR
+    integer, parameter, public :: DP = _DP
 #endif
 #ifdef _XDP
     ! extended double
-    integer, parameter, public :: &
-        XDP = _XDP, &
-        MAX_LEN_REAL_XDP_STR = _MAX_LEN_REAL_XDP_STR, &
-        MAX_LEN_COMPLEX_XDP_STR = _MAX_LEN_COMPLEX_XDP_STR
+    integer, parameter, public :: XDP = _XDP
 #endif
 #ifdef _QP
     ! quadruple
-    integer, parameter, public :: &
-        QP = _QP, &
-        MAX_LEN_REAL_QP_STR = _MAX_LEN_REAL_QP_STR, &
-        MAX_LEN_COMPLEX_QP_STR = _MAX_LEN_COMPLEX_QP_STR
+    integer, parameter, public :: QP = _QP
 #endif
 
     ! character
@@ -106,11 +81,4 @@ module stdlib_kinds
         RK = kind(0.), &  ! real
         CK = kind((0, 0)), &  ! complex
         SK = kind('')  ! character
-
-    ! maximum lengths of default kinds
-    integer, parameter, public :: &
-        MAX_LEN_LOGICAL_STR = _MAX_LEN_LOGICAL_STR, &
-        MAX_LEN_INTEGER_STR = _MAX_LEN_INTEGER_STR, &
-        MAX_LEN_REAL_STR = _MAX_LEN_REAL_STR, &
-        MAX_LEN_COMPLEX_STR = _MAX_LEN_COMPLEX_STR
 end module stdlib_kinds
