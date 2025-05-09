@@ -7,6 +7,7 @@ module stdlib_string
         C_VERTICAL_TAB, C_FORM_FEED, C_CARRIAGE_RETURN
     use stdlib_kinds
     use stdlib_base, only: assign_optional
+    use stdlib_math, only: dec_digits, dec_exponent
 
     implicit none
 
@@ -310,13 +311,22 @@ module stdlib_string
 contains
     !--------------------------------------------------------------------------
 
-#define _FILE "../string/to_character.inc"
+#define _FILE "../string/to_character_l.inc"
 #define _ID _LOGICAL
 #include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/to_character_i.inc"
 #define _ID _INTEGER
 #include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/to_character_r.inc"
 #define _ID _REAL
 #include "../inc/defs.inc"
+#undef _FILE
+
+#define _FILE "../string/to_character_c.inc"
 #define _ID _COMPLEX
 #include "../inc/defs.inc"
 #undef _FILE
