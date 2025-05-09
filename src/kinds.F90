@@ -61,9 +61,6 @@ module stdlib_kinds
         HP = _HP, &
         MAX_LEN_REAL_HP_STR = _MAX_LEN_REAL_HP_STR, &
         MAX_LEN_COMPLEX_HP_STR = _MAX_LEN_COMPLEX_HP_STR
-    real(HP), parameter, public :: &
-        REAL_HP_INF = _REAL_HP_INF, &
-        REAL_HP_NAN = _REAL_HP_NAN
 #endif
 #ifdef _SP
     ! single
@@ -71,9 +68,6 @@ module stdlib_kinds
         SP = _SP, &
         MAX_LEN_REAL_SP_STR = _MAX_LEN_REAL_SP_STR, &
         MAX_LEN_COMPLEX_SP_STR = _MAX_LEN_COMPLEX_SP_STR
-    real(SP), parameter, public :: &
-        REAL_SP_INF = _REAL_SP_INF, &
-        REAL_SP_NAN = _REAL_SP_NAN
 #endif
 #ifdef _DP
     ! double
@@ -81,9 +75,6 @@ module stdlib_kinds
         DP = _DP, &
         MAX_LEN_REAL_DP_STR = _MAX_LEN_REAL_DP_STR, &
         MAX_LEN_COMPLEX_DP_STR = _MAX_LEN_COMPLEX_DP_STR
-    real(DP), parameter, public :: &
-        REAL_DP_INF = _REAL_DP_INF, &
-        REAL_DP_NAN = _REAL_DP_NAN
 #endif
 #ifdef _XDP
     ! extended double
@@ -91,9 +82,6 @@ module stdlib_kinds
         XDP = _XDP, &
         MAX_LEN_REAL_XDP_STR = _MAX_LEN_REAL_XDP_STR, &
         MAX_LEN_COMPLEX_XDP_STR = _MAX_LEN_COMPLEX_XDP_STR
-    real(XDP), parameter, public :: &
-        REAL_XDP_INF = _REAL_XDP_INF, &
-        REAL_XDP_NAN = _REAL_XDP_NAN
 #endif
 #ifdef _QP
     ! quadruple
@@ -101,9 +89,6 @@ module stdlib_kinds
         QP = _QP, &
         MAX_LEN_REAL_QP_STR = _MAX_LEN_REAL_QP_STR, &
         MAX_LEN_COMPLEX_QP_STR = _MAX_LEN_COMPLEX_QP_STR
-    real(QP), parameter, public :: &
-        REAL_QP_INF = _REAL_QP_INF, &
-        REAL_QP_NAN = _REAL_QP_NAN
 #endif
 
     ! character
