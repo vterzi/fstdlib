@@ -18,7 +18,7 @@ pure function _PROC(arg, mode, width, decimals, expwidth, sign) result(res)
     character(len=MAX_LEN_INTEGER_STR) :: decimals_str, expwidth_str, &
         width_real_str, width_imag_str
     character(len=3) :: sign_str
-    character(len=_CAT3(MAX_LEN_REAL_,_KIND_LABEL,_STR)) :: buffer
+    character(len=_CAT3(MAX_LEN_COMPLEX_,_KIND_LABEL,_STR)) :: buffer
 
     present_mode = present(mode)
     present_width = present(width)
