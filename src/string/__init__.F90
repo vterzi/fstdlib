@@ -304,7 +304,7 @@ module stdlib_string
     end interface casefold
 
     interface operator(.in.)
-        module procedure contains
+        module procedure in
     end interface
 
     !--------------------------------------------------------------------------
@@ -563,12 +563,12 @@ contains
 
     !--------------------------------------------------------------------------
 
-    elemental function contains(substr, str) result(res)
+    elemental function in(substr, str) result(res)
         character(len=*), intent(in) :: substr, str
         logical :: res
 
         res = len(substr) == 0 .or. index(str, substr) > 0
-    end function contains
+    end function in
 
 
     elemental function startswith(str, substr) result(res)
