@@ -187,23 +187,32 @@ end subroutine _PROC
 #define _PROC _CAT2(_LIST,copy)
 subroutine _PROC(self, other)
     class(_LIST), intent(in) :: self
-    type(_LIST), intent(out) :: other
+    type(_LIST), intent(inout) :: other
 
     type(_ITEM), pointer :: item, new
 
     item => self%first
     if (associated(item)) then
-        allocate(new)
+        new => other%first
+        if (.not. associated(new)) then
+            allocate(new)
+            other%first => new
+        end if
         new%val = item%val
-        other%first => new
         item => item%next
         do while (associated(item))
-            allocate(new%next)
+            if (.not. associated(new%next)) allocate(new%next)
             new => new%next
             new%val = item%val
             item => item%next
         end do
         other%last => new
+        item => new%next
+        do while (associated(item))
+            new => item%next
+            deallocate(item)
+            item => new
+        end do
         other%size = self%size
     end if
 end subroutine _PROC
