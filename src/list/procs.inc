@@ -69,9 +69,9 @@ function _PROC(self, s) result(list)
         list%last => next
     else if (st < 0 .and. lo >= up) then
         st = -st
-        idx = lo
+        i = lo
         lo = lo - ((lo - up) / st) * st
-        up = idx
+        up = i
         idx = lo
         item => self%item(idx)
         allocate(prev)
@@ -125,9 +125,9 @@ subroutine _PROC(self, key, val)
         error stop "slice step cannot be zero"  ! ValueError
     else if (st < 0) then
         st = -st
-        idx = lo
+        i = lo
         lo = lo - ((lo - up) / st) * st
-        up = idx
+        up = i
     end if
     if (lo <= up) then
         idx = lo
