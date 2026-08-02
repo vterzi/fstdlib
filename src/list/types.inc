@@ -27,7 +27,9 @@ contains
     _PRIVATE_METHOD(_LIST,setitem_index)
     _PRIVATE_METHOD(_LIST,setitem_slice_item)
     _PRIVATE_METHOD(_LIST,setitem_slice_list)
-    generic :: setitem => setitem_index, setitem_slice_item, setitem_slice_list
+    _PRIVATE_METHOD(_LIST,setitem_slice_array)
+    generic :: setitem => setitem_index, setitem_slice_item, &
+        setitem_slice_list, setitem_slice_array
     _METHOD(_LIST,append)
     _METHOD(_LIST,clear)
     _METHOD(_LIST,copy)

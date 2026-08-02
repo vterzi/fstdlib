@@ -174,6 +174,7 @@ subroutine _PROC(self, key, val)
     end if
     lo = min(max(lo, 1), size + 1)
     up = min(max(up, 0), size)
+    n = val%size
     if (st == 1) then
         zeroth%next => self%first
         before => zeroth
@@ -218,11 +219,10 @@ subroutine _PROC(self, key, val)
                 nullify(self%last)
             end if
         end if
-        self%size = size - (up - lo + 1) + val%size
+        self%size = size - (up - lo + 1) + n
     else
-        n = max((up - lo + st) / st, 0)
-        if (val%size /= n) error stop "attempt to assign sequence to" &
-            // " extended slice of incompatible size"  ! ValueError
+        if (n /= max((up - lo + st) / st, 0)) error stop "attempt to assign" &
+            // " sequence to extended slice of incompatible size"  ! ValueError
         if (n > 0) then
             val_item => val%first
             if (reversed) then
@@ -252,6 +252,90 @@ subroutine _PROC(self, key, val)
                     before => after
                 end do
             end if
+        end if
+    end if
+end subroutine _PROC
+#undef _PROC
+
+
+#define _PROC _CAT2(_LIST,setitem_slice_array)
+subroutine _PROC(self, key, val)
+    class(_LIST), intent(inout) :: self
+    type(slice), intent(in) :: key
+    _ARG_TYPE, intent(in) :: val(:)
+
+    logical :: reversed
+    integer :: size, lo, up, st, n, idx, i, lo_, up_, st_
+    type(_ITEM), target :: zeroth
+    type(_ITEM), pointer :: before, after, item
+
+    size = self%size
+    lo = wraparound_index(key%start, size, .false.)
+    up = wraparound_index(key%stop, size, .false.)
+    st = key%step
+    if (st == 0) then
+        error stop "slice step cannot be zero"  ! ValueError
+    else if (st < 0) then
+        reversed = .true.
+        st = -st
+        i = lo
+        lo = lo - ((lo - up) / st) * st
+        up = i
+    else
+        reversed = .false.
+    end if
+    lo = min(max(lo, 1), size + 1)
+    up = min(max(up, 0), size)
+    n = size(val)
+    if (reversed) then
+        lo_ = n
+        up_ = 1
+        st_ = -1
+    else
+        lo_ = 1
+        up_ = n
+        st_ = 1
+    end if
+    if (st == 1) then
+        zeroth%next => self%first
+        before => zeroth
+        do i = 1, lo - 1
+            before => before%next
+        end do
+        after => before%next
+        do i = lo, up
+            item => after
+            after => after%next
+            deallocate(item)
+        end do
+        do idx = lo_, up_, st_
+            allocate(item)
+            item%val = val(idx)
+            before%next => item
+            before => item
+        end do
+        before%next => after
+        if (lo == 1) self%first => zeroth%next
+        if (up == size) then
+            if (.not. associated(before, zeroth)) then
+                self%last => before
+            else
+                nullify(self%last)
+            end if
+        end if
+        self%size = size - (up - lo + 1) + n
+    else
+        if (n /= max((up - lo + st) / st, 0)) error stop "attempt to assign" &
+            // " sequence to extended slice of incompatible size"  ! ValueError
+        if (n > 0) then
+            item => self%item(lo)
+            item%val = val(lo_)
+            do idx = lo_ + st_, up_, st_
+                do i = 1, st
+                    item => item%next
+                end do
+                item%val = val(idx)
+            end do
         end if
     end if
 end subroutine _PROC
