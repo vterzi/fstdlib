@@ -152,7 +152,7 @@ subroutine _PROC(self, key, val)
     type(slice), intent(in) :: key
     class(_LIST), intent(in) :: val
 
-    logical :: unreversed
+    logical :: reversed
     integer :: size, lo, up, st, n, idx, i
     type(_ITEM), target :: zeroth
     type(_ITEM), pointer :: before, after, self_item, val_item
@@ -164,13 +164,13 @@ subroutine _PROC(self, key, val)
     if (st == 0) then
         error stop "slice step cannot be zero"  ! ValueError
     else if (st < 0) then
-        unreversed = .false.
+        reversed = .true.
         st = -st
         i = lo
         lo = lo - ((lo - up) / st) * st
         up = i
     else
-        unreversed = .true.
+        reversed = .false.
     end if
     lo = min(max(lo, 1), size + 1)
     up = min(max(up, 0), size)
@@ -187,15 +187,7 @@ subroutine _PROC(self, key, val)
             deallocate(self_item)
         end do
         val_item => val%first
-        if (unreversed) then
-            do while (associated(val_item))
-                allocate(self_item)
-                self_item%val = val_item%val
-                before%next => self_item
-                before => self_item
-                val_item => val_item%next
-            end do
-        else
+        if (reversed) then
             do while (associated(val_item))
                 allocate(self_item)
                 self_item%val = val_item%val
@@ -203,11 +195,19 @@ subroutine _PROC(self, key, val)
                 after => self_item
                 val_item => val_item%next
             end do
+        else
+            do while (associated(val_item))
+                allocate(self_item)
+                self_item%val = val_item%val
+                before%next => self_item
+                before => self_item
+                val_item => val_item%next
+            end do
         end if
         before%next => after
         if (lo == 1) self%first => zeroth%next
         if (up == size) then
-            if (.not. unreversed) then
+            if (reversed) then
                 do while (associated(before%next))
                     before => before%next
                 end do
@@ -225,7 +225,7 @@ subroutine _PROC(self, key, val)
             // " extended slice of incompatible size"  ! ValueError
         if (n > 0) then
             val_item => val%first
-            if (.not. unreversed) then
+            if (reversed) then
                 nullify(after)
                 do while (associated(val_item))
                     allocate(before)
@@ -245,7 +245,7 @@ subroutine _PROC(self, key, val)
                 val_item => val_item%next
                 self_item%val = val_item%val
             end do
-            if (.not. unreversed) then
+            if (reversed) then
                 do while (associated(before))
                     after => before%next
                     deallocate(before)
