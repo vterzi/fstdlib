@@ -154,7 +154,6 @@ subroutine _PROC(self, key, val)
 
     logical :: unreversed
     integer :: size, lo, up, st, n, idx, i
-    _TYPE_LEN(:), dimension(:), allocatable :: arr(:)
     type(_ITEM), target :: zeroth
     type(_ITEM), pointer :: before, after, self_item, val_item
 
@@ -225,26 +224,32 @@ subroutine _PROC(self, key, val)
         if (val%size /= n) error stop "attempt to assign sequence to" &
             // " extended slice of incompatible size"  ! ValueError
         if (n > 0) then
-            if (unreversed) then
-                self_item => self%item(lo)
-                val_item => val%first
-                self_item%val = val_item%val
-                do idx = 2, n
-                    do i = 1, st
-                        self_item => self_item%next
-                    end do
+            val_item => val%first
+            if (.not. unreversed) then
+                nullify(after)
+                do while (associated(val_item))
+                    allocate(before)
+                    before%val = val_item%val
+                    before%next => after
+                    after => before
                     val_item => val_item%next
-                    self_item%val = val_item%val
                 end do
-            else
-                arr = val
-                self_item => self%item(lo)
-                self_item%val = arr(n)
-                do idx = n - 1, 1, -1
-                    do i = 1, st
-                        self_item => self_item%next
-                    end do
-                    self_item%val = arr(idx)
+                val_item => before
+            end if
+            self_item => self%item(lo)
+            self_item%val = val_item%val
+            do idx = 2, n
+                do i = 1, st
+                    self_item => self_item%next
+                end do
+                val_item => val_item%next
+                self_item%val = val_item%val
+            end do
+            if (.not. unreversed) then
+                do while (associated(before))
+                    after => before%next
+                    deallocate(before)
+                    before => after
                 end do
             end if
         end if
