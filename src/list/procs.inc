@@ -146,6 +146,113 @@ end subroutine _PROC
 #undef _PROC
 
 
+#define _PROC _CAT2(_LIST,setitem_slice_list)
+subroutine _PROC(self, key, val)
+    class(_LIST), intent(inout) :: self
+    type(slice), intent(in) :: key
+    class(_LIST), intent(in) :: val
+
+    logical :: unreversed
+    integer :: size, lo, up, st, n, idx, i
+    _TYPE_LEN(:), dimension(:), allocatable :: arr(:)
+    type(_ITEM), target :: zeroth
+    type(_ITEM), pointer :: before, after, self_item, val_item
+
+    size = self%size
+    lo = wraparound_index(key%start, size, .false.)
+    up = wraparound_index(key%stop, size, .false.)
+    st = key%step
+    if (st == 0) then
+        error stop "slice step cannot be zero"  ! ValueError
+    else if (st < 0) then
+        unreversed = .false.
+        st = -st
+        i = lo
+        lo = lo - ((lo - up) / st) * st
+        up = i
+    else
+        unreversed = .true.
+    end if
+    lo = min(max(lo, 1), size + 1)
+    up = min(max(up, 0), size)
+    if (st == 1) then
+        zeroth%next => self%first
+        before => zeroth
+        do i = 1, lo - 1
+            before => before%next
+        end do
+        after => before%next
+        do i = lo, up
+            self_item => after
+            after => after%next
+            deallocate(self_item)
+        end do
+        val_item => val%first
+        if (unreversed) then
+            do while (associated(val_item))
+                allocate(self_item)
+                self_item%val = val_item%val
+                before%next => self_item
+                before => self_item
+                val_item => val_item%next
+            end do
+        else
+            do while (associated(val_item))
+                allocate(self_item)
+                self_item%val = val_item%val
+                self_item%next => after
+                after => self_item
+                val_item => val_item%next
+            end do
+        end if
+        before%next => after
+        if (lo == 1) self%first => zeroth%next
+        if (up == size) then
+            if (.not. unreversed) then
+                do while (associated(before%next))
+                    before => before%next
+                end do
+            end if
+            if (.not. associated(before, zeroth)) then
+                self%last => before
+            else
+                nullify(self%last)
+            end if
+        end if
+        self%size = size - (up - lo + 1) + val%size
+    else
+        n = max((up - lo + st) / st, 0)
+        if (val%size /= n) error stop "attempt to assign sequence to" &
+            // " extended slice of incompatible size"  ! ValueError
+        if (n > 0) then
+            if (unreversed) then
+                self_item => self%item(lo)
+                val_item => val%first
+                self_item%val = val_item%val
+                do idx = 2, n
+                    do i = 1, st
+                        self_item => self_item%next
+                    end do
+                    val_item => val_item%next
+                    self_item%val = val_item%val
+                end do
+            else
+                arr = val
+                self_item => self%item(lo)
+                self_item%val = arr(n)
+                do idx = n - 1, 1, -1
+                    do i = 1, st
+                        self_item => self_item%next
+                    end do
+                    self_item%val = arr(idx)
+                end do
+            end if
+        end if
+    end if
+end subroutine _PROC
+#undef _PROC
+
+
 #define _PROC _CAT2(_LIST,append)
 elemental subroutine _PROC(self, object)
     class(_LIST), intent(inout) :: self
