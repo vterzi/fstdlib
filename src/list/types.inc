@@ -1,8 +1,8 @@
-#undef _METHOD
-#undef _PRIVATE_METHOD
+#undef _TYPE_PROC
+#define _TYPE_PROC(T,P) procedure :: P => _CAT2(T,P)
+#undef _TYPE_PRIVATE_PROC
+#define _TYPE_PRIVATE_PROC(T,P) procedure, private :: P => _CAT2(T,P)
 #undef _ELEM_TYPE
-#define _METHOD(T,P) procedure :: P => _CAT2(T,P)
-#define _PRIVATE_METHOD(T,P) procedure, private :: P => _CAT2(T,P)
 #if _TYPE_ID == _CHARACTER
 #  define _ELEM_TYPE _TYPE(len=:, kind=_KIND), allocatable
 #else
@@ -20,31 +20,31 @@ type, public :: _LIST
     integer :: size = 0
     type(_ITEM), pointer :: first => null(), last => null()
 contains
-    _PRIVATE_METHOD(_LIST,item)
-    _PRIVATE_METHOD(_LIST,getitem_index)
-    _PRIVATE_METHOD(_LIST,getitem_slice)
+    _TYPE_PRIVATE_PROC(_LIST,item)
+    _TYPE_PRIVATE_PROC(_LIST,getitem_index)
+    _TYPE_PRIVATE_PROC(_LIST,getitem_slice)
     generic :: getitem => getitem_index, getitem_slice
-    _PRIVATE_METHOD(_LIST,setitem_index)
-    _PRIVATE_METHOD(_LIST,setitem_slice_item)
-    _PRIVATE_METHOD(_LIST,setitem_slice_list)
-    _PRIVATE_METHOD(_LIST,setitem_slice_array)
+    _TYPE_PRIVATE_PROC(_LIST,setitem_index)
+    _TYPE_PRIVATE_PROC(_LIST,setitem_slice_item)
+    _TYPE_PRIVATE_PROC(_LIST,setitem_slice_list)
+    _TYPE_PRIVATE_PROC(_LIST,setitem_slice_array)
     generic :: setitem => setitem_index, setitem_slice_item, &
         setitem_slice_list, setitem_slice_array
-    _METHOD(_LIST,append)
-    _METHOD(_LIST,clear)
-    _METHOD(_LIST,copy)
-    _METHOD(_LIST,count)
-    _PRIVATE_METHOD(_LIST,extend_list)
-    _PRIVATE_METHOD(_LIST,extend_array)
+    _TYPE_PROC(_LIST,append)
+    _TYPE_PROC(_LIST,clear)
+    _TYPE_PROC(_LIST,copy)
+    _TYPE_PROC(_LIST,count)
+    _TYPE_PRIVATE_PROC(_LIST,extend_list)
+    _TYPE_PRIVATE_PROC(_LIST,extend_array)
     generic :: extend => extend_list, extend_array
-    _METHOD(_LIST,index)
-    _METHOD(_LIST,insert)
-    _METHOD(_LIST,pop)
-    _METHOD(_LIST,remove)
-    _METHOD(_LIST,reverse)
-    _METHOD(_LIST,sort)
-    _PRIVATE_METHOD(_LIST,assign_list)
-    _PRIVATE_METHOD(_LIST,assign_array)
+    _TYPE_PROC(_LIST,index)
+    _TYPE_PROC(_LIST,insert)
+    _TYPE_PROC(_LIST,pop)
+    _TYPE_PROC(_LIST,remove)
+    _TYPE_PROC(_LIST,reverse)
+    _TYPE_PROC(_LIST,sort)
+    _TYPE_PRIVATE_PROC(_LIST,assign_list)
+    _TYPE_PRIVATE_PROC(_LIST,assign_array)
     generic :: assignment(=) => assign_list, assign_array
     final :: _CAT2(_LIST,final)
 end type _LIST
@@ -77,10 +77,10 @@ type, public :: _ITER
     private
     type(_ITEM), pointer :: item => null()
 contains
-    _METHOD(_ITER,stop)
-    _METHOD(_ITER,getitem)
-    _METHOD(_ITER,setitem)
-    _METHOD(_ITER,next)
+    _TYPE_PROC(_ITER,stop)
+    _TYPE_PROC(_ITER,getitem)
+    _TYPE_PROC(_ITER,setitem)
+    _TYPE_PROC(_ITER,next)
 end type _ITER
 
 interface assignment(=)
