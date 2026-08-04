@@ -40,53 +40,53 @@ function _PROC(self, s) result(list)
     type(slice), intent(in) :: s
     type(_LIST) :: list
 
-    integer :: size, lo, up, st, idx, i
+    integer :: size, s_start, s_stop, s_step, idx, i
     type(_ITEM), pointer :: item, prev, next
 
     size = self%size
-    lo = wraparound_index(s%start, size, .true.)
-    up = wraparound_index(s%stop, size, .true.)
-    st = s%step
-    if (st == 0) then
+    s_start = wraparound_index(s%start, size, .true.)
+    s_stop = wraparound_index(s%stop, size, .true.)
+    s_step = s%step
+    if (s_step == 0) then
         error stop "slice step cannot be zero"  ! ValueError
-    else if (st > 0 .and. lo <= up) then
-        idx = lo
+    else if (s_step > 0 .and. s_start <= s_stop) then
+        idx = s_start
         item => self%item(idx)
         allocate(next)
         next%val = item%val
         list%head => next
-        idx = idx + st
-        do while (idx <= up)
-            do i = 1, st
+        idx = idx + s_step
+        do while (idx <= s_stop)
+            do i = 1, s_step
                 item => item%next
             end do
             prev => next
             allocate(next)
             next%val = item%val
             prev%next => next
-            idx = idx + st
+            idx = idx + s_step
         end do
         list%tail => next
-    else if (st < 0 .and. lo >= up) then
-        st = -st
-        i = lo
-        lo = lo - ((lo - up) / st) * st
-        up = i
-        idx = lo
+    else if (s_step < 0 .and. s_start >= s_stop) then
+        s_step = -s_step
+        i = s_start
+        s_start = s_start - ((s_start - s_stop) / s_step) * s_step
+        s_stop = i
+        idx = s_start
         item => self%item(idx)
         allocate(prev)
         prev%val = item%val
         list%tail => prev
-        idx = idx + st
-        do while (idx <= up)
-            do i = 1, st
+        idx = idx + s_step
+        do while (idx <= s_stop)
+            do i = 1, s_step
                 item => item%next
             end do
             next => prev
             allocate(prev)
             prev%val = item%val
             prev%next => next
-            idx = idx + st
+            idx = idx + s_step
         end do
         list%head => prev
     end if
@@ -114,32 +114,32 @@ subroutine _PROC(self, key, val)
     type(slice), intent(in) :: key
     _ARG_TYPE, intent(in) :: val
 
-    integer :: size, lo, up, st, idx, i
+    integer :: size, key_start, key_stop, key_step, idx, i
     type(_ITEM), pointer :: item
 
     size = self%size
-    lo = wraparound_index(key%start, size, .true.)
-    up = wraparound_index(key%stop, size, .true.)
-    st = key%step
-    if (st == 0) then
+    key_start = wraparound_index(key%start, size, .true.)
+    key_stop = wraparound_index(key%stop, size, .true.)
+    key_step = key%step
+    if (key_step == 0) then
         error stop "slice step cannot be zero"  ! ValueError
-    else if (st < 0) then
-        st = -st
-        i = lo
-        lo = lo - ((lo - up) / st) * st
-        up = i
+    else if (key_step < 0) then
+        key_step = -key_step
+        i = key_start
+        key_start = key_start - ((key_start - key_stop) / key_step) * key_step
+        key_stop = i
     end if
-    if (lo <= up) then
-        idx = lo
+    if (key_start <= key_stop) then
+        idx = key_start
         item => self%item(idx)
         item%val = val
-        idx = idx + st
-        do while (idx <= up)
-            do i = 1, st
+        idx = idx + key_step
+        do while (idx <= key_stop)
+            do i = 1, key_step
                 item => item%next
             end do
             item%val = val
-            idx = idx + st
+            idx = idx + key_step
         end do
     end if
 end subroutine _PROC
