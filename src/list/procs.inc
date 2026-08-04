@@ -153,36 +153,38 @@ subroutine _PROC(self, key, val)
     class(_LIST), intent(in) :: val
 
     logical :: reversed
-    integer :: size, lo, up, st, n, idx, i
+    integer :: size_self, key_start, key_stop, key_step, size_key, size_val, &
+        idx, i
     type(_ITEM), target :: zeroth
     type(_ITEM), pointer :: prev, next, self_item, val_item
 
-    size = self%size
-    lo = wraparound_index(key%start, size, .false.)
-    up = wraparound_index(key%stop, size, .false.)
-    st = key%step
-    n = val%size
-    if (st == 0) then
+    size_self = self%size
+    key_start = wraparound_index(key%start, size_self, .false.)
+    key_stop = wraparound_index(key%stop, size_self, .false.)
+    key_step = key%step
+    size_val = val%size
+    if (key_step == 0) then
         error stop "slice step cannot be zero"  ! ValueError
-    else if (st < 0) then
+    else if (key_step < 0) then
         reversed = .true.
-        st = -st
-        i = lo
-        lo = lo - ((lo - up) / st) * st
-        up = i
+        key_step = -key_step
+        i = key_start
+        key_start = key_start - ((key_start - key_stop) / key_step) * key_step
+        key_stop = i
     else
         reversed = .false.
     end if
-    lo = min(max(lo, 1), size + 1)
-    up = min(max(up, 0), size)
-    if (st == 1) then
+    key_start = min(max(key_start, 1), size_self + 1)
+    key_stop = min(max(key_stop, 0), size_self)
+    if (key_step == 1) then
+        size_key = max(key_stop - key_start + 1, 0)
         zeroth%next => self%first
         prev => zeroth
-        do i = 1, lo - 1
+        do i = 1, key_start - 1
             prev => prev%next
         end do
         next => prev%next
-        do i = lo, up
+        do i = key_start, key_stop
             self_item => next
             next => next%next
             deallocate(self_item)
@@ -206,8 +208,8 @@ subroutine _PROC(self, key, val)
             end do
         end if
         prev%next => next
-        if (lo == 1) self%first => zeroth%next
-        if (up == size) then
+        if (key_start == 1) self%first => zeroth%next
+        if (key_stop == size_self) then
             if (reversed) then
                 do while (associated(prev%next))
                     prev => prev%next
@@ -219,11 +221,12 @@ subroutine _PROC(self, key, val)
                 nullify(self%last)
             end if
         end if
-        self%size = size - (up - lo + 1) + n
+        self%size = size_self - size_key + size_val
     else
-        if (n /= max((up - lo + st) / st, 0)) error stop "attempt to assign" &
-            // " sequence to extended slice of incompatible size"  ! ValueError
-        if (n > 0) then
+        size_key = max((key_stop - key_start + key_step) / key_step, 0)
+        if (size_key /= size_val) error stop "attempt to assign sequence to" &
+            // " extended slice of incompatible size"  ! ValueError
+        if (size_val > 0) then
             val_item => val%first
             if (reversed) then
                 nullify(next)
@@ -236,10 +239,10 @@ subroutine _PROC(self, key, val)
                 end do
                 val_item => prev
             end if
-            self_item => self%item(lo)
+            self_item => self%item(key_start)
             self_item%val = val_item%val
-            do idx = 2, n
-                do i = 1, st
+            do idx = 2, size_val
+                do i = 1, key_step
                     self_item => self_item%next
                 end do
                 val_item => val_item%next
@@ -264,68 +267,85 @@ subroutine _PROC(self, key, val)
     type(slice), intent(in) :: key
     _ARG_TYPE, intent(in) :: val(:)
 
-    integer :: size, lo, up, st, n, idx, i, lo_, up_, st_
+    integer :: size_self, key_start, key_stop, key_step, size_key, size_val, &
+        val_start, val_stop, val_step, size_diff, idx, i
     type(_ITEM), target :: zeroth
     type(_ITEM), pointer :: prev, next, item
 
-    size = self%size
-    lo = wraparound_index(key%start, size, .false.)
-    up = wraparound_index(key%stop, size, .false.)
-    st = key%step
-    n = size(val)
-    if (st == 0) then
+    size_self = self%size
+    key_start = wraparound_index(key%start, size_self, .false.)
+    key_stop = wraparound_index(key%stop, size_self, .false.)
+    key_step = key%step
+    size_val = size(val)
+    if (key_step == 0) then
         error stop "slice step cannot be zero"  ! ValueError
-    else if (st < 0) then
-        st = -st
-        i = lo
-        lo = lo - ((lo - up) / st) * st
-        up = i
-        lo_ = n
-        up_ = 1
-        st_ = -1
+    else if (key_step < 0) then
+        key_step = -key_step
+        i = key_start
+        key_start = key_start - ((key_start - key_stop) / key_step) * key_step
+        key_stop = i
+        val_start = size_val
+        val_stop = 1
+        val_step = -1
     else
-        lo_ = 1
-        up_ = n
-        st_ = 1
+        val_start = 1
+        val_stop = size_val
+        val_step = 1
     end if
-    lo = min(max(lo, 1), size + 1)
-    up = min(max(up, 0), size)
-    if (st == 1) then
+    key_start = min(max(key_start, 1), size_self + 1)
+    key_stop = min(max(key_stop, 0), size_self)
+    if (key_step == 1) then
+        size_key = key_stop - key_start + 1
+        size_diff = size_val - size_key
         zeroth%next => self%first
-        prev => zeroth
-        do i = 1, lo - 1
-            prev => prev%next
+        item => zeroth
+        do i = 1, key_start - 1
+            item => item%next
         end do
-        next => prev%next
-        do i = lo, up
-            item => next
-            next => next%next
-            deallocate(item)
-        end do
-        do idx = lo_, up_, st_
-            allocate(item)
+        idx = val_start
+        do i = 1, min(size_val, size_key)
+            item => item%next
             item%val = val(idx)
-            prev%next => item
-            prev => item
+            idx = idx + val_step
         end do
-        prev%next => next
-        if (lo == 1) self%first => zeroth%next
-        if (up == size) then
-            if (.not. associated(prev, zeroth)) then
-                self%last => prev
+        if (size_diff /= 0) then
+            prev => item
+            next => prev%next
+            if (size_diff > 0) then
+                do i = 1, size_diff
+                    allocate(item)
+                    item%val = val(idx)
+                    idx = idx + val_step
+                    prev%next => item
+                    prev => item
+                end do
+            else if (size_diff < 0) then
+                do i = 1, -size_diff
+                    item => next
+                    next => item%next
+                    deallocate(item)
+                end do
+            end if
+            prev%next => next
+        end if
+        if (key_start == 1) self%first => zeroth%next
+        if (key_stop == size_self) then
+            if (.not. associated(item, zeroth)) then
+                self%last => item
             else
                 nullify(self%last)
             end if
         end if
-        self%size = size - (up - lo + 1) + n
+        self%size = size_self - size_key + size_val
     else
-        if (n /= max((up - lo + st) / st, 0)) error stop "attempt to assign" &
-            // " sequence to extended slice of incompatible size"  ! ValueError
-        if (n > 0) then
-            item => self%item(lo)
-            item%val = val(lo_)
-            do idx = lo_ + st_, up_, st_
-                do i = 1, st
+        size_key = max((key_stop - key_start + key_step) / key_step, 0)
+        if (size_val /= size_key) error stop "attempt to assign sequence to" &
+            // " extended slice of incompatible size"  ! ValueError
+        if (size_val > 0) then
+            item => self%item(key_start)
+            item%val = val(val_start)
+            do idx = val_start + val_step, val_stop, val_step
+                do i = 1, key_step
                     item => item%next
                 end do
                 item%val = val(idx)
