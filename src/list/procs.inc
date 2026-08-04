@@ -155,12 +155,13 @@ subroutine _PROC(self, key, val)
     logical :: reversed
     integer :: size, lo, up, st, n, idx, i
     type(_ITEM), target :: zeroth
-    type(_ITEM), pointer :: before, after, self_item, val_item
+    type(_ITEM), pointer :: prev, next, self_item, val_item
 
     size = self%size
     lo = wraparound_index(key%start, size, .false.)
     up = wraparound_index(key%stop, size, .false.)
     st = key%step
+    n = val%size
     if (st == 0) then
         error stop "slice step cannot be zero"  ! ValueError
     else if (st < 0) then
@@ -174,17 +175,16 @@ subroutine _PROC(self, key, val)
     end if
     lo = min(max(lo, 1), size + 1)
     up = min(max(up, 0), size)
-    n = val%size
     if (st == 1) then
         zeroth%next => self%first
-        before => zeroth
+        prev => zeroth
         do i = 1, lo - 1
-            before => before%next
+            prev => prev%next
         end do
-        after => before%next
+        next => prev%next
         do i = lo, up
-            self_item => after
-            after => after%next
+            self_item => next
+            next => next%next
             deallocate(self_item)
         end do
         val_item => val%first
@@ -192,29 +192,29 @@ subroutine _PROC(self, key, val)
             do while (associated(val_item))
                 allocate(self_item)
                 self_item%val = val_item%val
-                self_item%next => after
-                after => self_item
+                self_item%next => next
+                next => self_item
                 val_item => val_item%next
             end do
         else
             do while (associated(val_item))
                 allocate(self_item)
                 self_item%val = val_item%val
-                before%next => self_item
-                before => self_item
+                prev%next => self_item
+                prev => self_item
                 val_item => val_item%next
             end do
         end if
-        before%next => after
+        prev%next => next
         if (lo == 1) self%first => zeroth%next
         if (up == size) then
             if (reversed) then
-                do while (associated(before%next))
-                    before => before%next
+                do while (associated(prev%next))
+                    prev => prev%next
                 end do
             end if
-            if (.not. associated(before, zeroth)) then
-                self%last => before
+            if (.not. associated(prev, zeroth)) then
+                self%last => prev
             else
                 nullify(self%last)
             end if
@@ -226,15 +226,15 @@ subroutine _PROC(self, key, val)
         if (n > 0) then
             val_item => val%first
             if (reversed) then
-                nullify(after)
+                nullify(next)
                 do while (associated(val_item))
-                    allocate(before)
-                    before%val = val_item%val
-                    before%next => after
-                    after => before
+                    allocate(prev)
+                    prev%val = val_item%val
+                    prev%next => next
+                    next => prev
                     val_item => val_item%next
                 end do
-                val_item => before
+                val_item => prev
             end if
             self_item => self%item(lo)
             self_item%val = val_item%val
@@ -246,10 +246,10 @@ subroutine _PROC(self, key, val)
                 self_item%val = val_item%val
             end do
             if (reversed) then
-                do while (associated(before))
-                    after => before%next
-                    deallocate(before)
-                    before => after
+                do while (associated(prev))
+                    next => prev%next
+                    deallocate(prev)
+                    prev => next
                 end do
             end if
         end if
@@ -264,30 +264,22 @@ subroutine _PROC(self, key, val)
     type(slice), intent(in) :: key
     _ARG_TYPE, intent(in) :: val(:)
 
-    logical :: reversed
     integer :: size, lo, up, st, n, idx, i, lo_, up_, st_
     type(_ITEM), target :: zeroth
-    type(_ITEM), pointer :: before, after, item
+    type(_ITEM), pointer :: prev, next, item
 
     size = self%size
     lo = wraparound_index(key%start, size, .false.)
     up = wraparound_index(key%stop, size, .false.)
     st = key%step
+    n = size(val)
     if (st == 0) then
         error stop "slice step cannot be zero"  ! ValueError
     else if (st < 0) then
-        reversed = .true.
         st = -st
         i = lo
         lo = lo - ((lo - up) / st) * st
         up = i
-    else
-        reversed = .false.
-    end if
-    lo = min(max(lo, 1), size + 1)
-    up = min(max(up, 0), size)
-    n = size(val)
-    if (reversed) then
         lo_ = n
         up_ = 1
         st_ = -1
@@ -296,29 +288,31 @@ subroutine _PROC(self, key, val)
         up_ = n
         st_ = 1
     end if
+    lo = min(max(lo, 1), size + 1)
+    up = min(max(up, 0), size)
     if (st == 1) then
         zeroth%next => self%first
-        before => zeroth
+        prev => zeroth
         do i = 1, lo - 1
-            before => before%next
+            prev => prev%next
         end do
-        after => before%next
+        next => prev%next
         do i = lo, up
-            item => after
-            after => after%next
+            item => next
+            next => next%next
             deallocate(item)
         end do
         do idx = lo_, up_, st_
             allocate(item)
             item%val = val(idx)
-            before%next => item
-            before => item
+            prev%next => item
+            prev => item
         end do
-        before%next => after
+        prev%next => next
         if (lo == 1) self%first => zeroth%next
         if (up == size) then
-            if (.not. associated(before, zeroth)) then
-                self%last => before
+            if (.not. associated(prev, zeroth)) then
+                self%last => prev
             else
                 nullify(self%last)
             end if
