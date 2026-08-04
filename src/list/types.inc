@@ -18,7 +18,7 @@ end type _ITEM
 type, public :: _LIST
     private
     integer :: size = 0
-    type(_ITEM), pointer :: first => null(), last => null()
+    type(_ITEM), pointer :: head => null(), tail => null()
 contains
     _TYPE_PRIVATE_PROC(_LIST,item)
     _TYPE_PRIVATE_PROC(_LIST,getitem_index)

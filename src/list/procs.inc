@@ -11,7 +11,7 @@ function _PROC(self, index) result(item)
     integer :: idx
 
     idx = index
-    item => self%first
+    item => self%head
     do while (idx > 1)
         item => item%next
         idx = idx - 1
@@ -54,7 +54,7 @@ function _PROC(self, s) result(list)
         item => self%item(idx)
         allocate(next)
         next%val = item%val
-        list%first => next
+        list%head => next
         idx = idx + st
         do while (idx <= up)
             do i = 1, st
@@ -66,7 +66,7 @@ function _PROC(self, s) result(list)
             prev%next => next
             idx = idx + st
         end do
-        list%last => next
+        list%tail => next
     else if (st < 0 .and. lo >= up) then
         st = -st
         i = lo
@@ -76,7 +76,7 @@ function _PROC(self, s) result(list)
         item => self%item(idx)
         allocate(prev)
         prev%val = item%val
-        list%last => prev
+        list%tail => prev
         idx = idx + st
         do while (idx <= up)
             do i = 1, st
@@ -88,7 +88,7 @@ function _PROC(self, s) result(list)
             prev%next => next
             idx = idx + st
         end do
-        list%first => prev
+        list%head => prev
     end if
 end function _PROC
 #undef _PROC
@@ -155,7 +155,7 @@ subroutine _PROC(self, key, val)
     logical :: reversed
     integer :: size_self, key_start, key_stop, key_step, size_key, size_val, &
         idx, i
-    type(_ITEM), target :: zeroth
+    type(_ITEM), target :: sentinel
     type(_ITEM), pointer :: prev, next, self_item, val_item
 
     size_self = self%size
@@ -178,8 +178,8 @@ subroutine _PROC(self, key, val)
     key_stop = min(max(key_stop, 0), size_self)
     if (key_step == 1) then
         size_key = max(key_stop - key_start + 1, 0)
-        zeroth%next => self%first
-        prev => zeroth
+        sentinel%next => self%head
+        prev => sentinel
         do i = 1, key_start - 1
             prev => prev%next
         end do
@@ -189,7 +189,7 @@ subroutine _PROC(self, key, val)
             next => next%next
             deallocate(self_item)
         end do
-        val_item => val%first
+        val_item => val%head
         if (reversed) then
             do while (associated(val_item))
                 allocate(self_item)
@@ -208,17 +208,17 @@ subroutine _PROC(self, key, val)
             end do
         end if
         prev%next => next
-        if (key_start == 1) self%first => zeroth%next
+        if (key_start == 1) self%head => sentinel%next
         if (key_stop == size_self) then
             if (reversed) then
                 do while (associated(prev%next))
                     prev => prev%next
                 end do
             end if
-            if (.not. associated(prev, zeroth)) then
-                self%last => prev
+            if (.not. associated(prev, sentinel)) then
+                self%tail => prev
             else
-                nullify(self%last)
+                nullify(self%tail)
             end if
         end if
         self%size = size_self - size_key + size_val
@@ -227,7 +227,7 @@ subroutine _PROC(self, key, val)
         if (size_key /= size_val) error stop "attempt to assign sequence to" &
             // " extended slice of incompatible size"  ! ValueError
         if (size_val > 0) then
-            val_item => val%first
+            val_item => val%head
             if (reversed) then
                 nullify(next)
                 do while (associated(val_item))
@@ -269,7 +269,7 @@ subroutine _PROC(self, key, val)
 
     integer :: size_self, key_start, key_stop, key_step, size_key, size_val, &
         val_start, val_stop, val_step, size_diff, idx, i
-    type(_ITEM), target :: zeroth
+    type(_ITEM), target :: sentinel
     type(_ITEM), pointer :: prev, next, item
 
     size_self = self%size
@@ -297,8 +297,8 @@ subroutine _PROC(self, key, val)
     if (key_step == 1) then
         size_key = key_stop - key_start + 1
         size_diff = size_val - size_key
-        zeroth%next => self%first
-        item => zeroth
+        sentinel%next => self%head
+        item => sentinel
         do i = 1, key_start - 1
             item => item%next
         end do
@@ -328,12 +328,12 @@ subroutine _PROC(self, key, val)
             end if
             prev%next => next
         end if
-        if (key_start == 1) self%first => zeroth%next
+        if (key_start == 1) self%head => sentinel%next
         if (key_stop == size_self) then
-            if (.not. associated(item, zeroth)) then
-                self%last => item
+            if (.not. associated(item, sentinel)) then
+                self%tail => item
             else
-                nullify(self%last)
+                nullify(self%tail)
             end if
         end if
         self%size = size_self - size_key + size_val
@@ -365,12 +365,12 @@ elemental subroutine _PROC(self, object)
 
     allocate(new)
     new%val = object
-    if (associated(self%last)) then
-        self%last%next => new
+    if (associated(self%tail)) then
+        self%tail%next => new
     else
-        self%first => new
+        self%head => new
     end if
-    self%last => new
+    self%tail => new
     self%size = self%size + 1
 end subroutine _PROC
 #undef _PROC
@@ -382,13 +382,13 @@ elemental subroutine _PROC(self)
 
     type(_ITEM), pointer :: item, next
 
-    item => self%first
+    item => self%head
     do while (associated(item))
         next => item%next
         deallocate(item)
         item => next
     end do
-    nullify(self%first, self%last)
+    nullify(self%head, self%tail)
     self%size = 0
 end subroutine _PROC
 #undef _PROC
@@ -401,12 +401,12 @@ subroutine _PROC(self, other)
 
     type(_ITEM), pointer :: item, new
 
-    item => self%first
+    item => self%head
     if (associated(item)) then
-        new => other%first
+        new => other%head
         if (.not. associated(new)) then
             allocate(new)
-            other%first => new
+            other%head => new
         end if
         new%val = item%val
         item => item%next
@@ -416,7 +416,7 @@ subroutine _PROC(self, other)
             new%val = item%val
             item => item%next
         end do
-        other%last => new
+        other%tail => new
         item => new%next
         do while (associated(item))
             new => item%next
@@ -438,7 +438,7 @@ function _PROC(self, val) result(count)
     type(_ITEM), pointer :: item
 
     count = 0
-    item => self%first
+    item => self%head
     do while (associated(item))
         if (_EQ(item%val,val)) count = count + 1
         item => item%next
@@ -454,14 +454,14 @@ subroutine _PROC(self, iterable)
 
     type(_ITEM), pointer :: item, new
 
-    item => iterable%first
+    item => iterable%head
     if (associated(item)) then
         allocate(new)
         new%val = item%val
-        if (associated(self%last)) then
-            self%last%next => new
+        if (associated(self%tail)) then
+            self%tail%next => new
         else
-            self%first => new
+            self%head => new
         end if
         item => item%next
         do while (associated(item))
@@ -470,7 +470,7 @@ subroutine _PROC(self, iterable)
             new%val = item%val
             item => item%next
         end do
-        self%last => new
+        self%tail => new
         self%size = self%size + iterable%size
     end if
 end subroutine _PROC
@@ -489,17 +489,17 @@ pure subroutine _PROC(self, iterable)
     if (n > 0) then
         allocate(new)
         new%val = iterable(1)
-        if (associated(self%last)) then
-            self%last%next => new
+        if (associated(self%tail)) then
+            self%tail%next => new
         else
-            self%first => new
+            self%head => new
         end if
         do i = 2, n
             allocate(new%next)
             new => new%next
             new%val = iterable(i)
         end do
-        self%last => new
+        self%tail => new
         self%size = self%size + n
     end if
 end subroutine _PROC
@@ -527,7 +527,7 @@ function _PROC(self, val, start, stop) result(index)
         up = self%size
     end if
     index = 0
-    item => self%first
+    item => self%head
     i = 1
     do while (associated(item))
         if (i > up) then
@@ -560,8 +560,8 @@ subroutine _PROC(self, index, object)
         allocate(new)
         new%val = object
         if (idx < 1) then
-            new%next => self%first
-            self%first => new
+            new%next => self%head
+            self%head => new
         else
             item => self%item(idx)
             new%next => item%next
@@ -596,14 +596,14 @@ function _PROC(self, index) result(val)
         old => item%next
         item%next => old%next
     else
-        old => self%first
-        self%first => old%next
+        old => self%head
+        self%head => old%next
     end if
     if (idx == size) then
         if (not_first) then
-            self%last => item
+            self%tail => item
         else
-            nullify(self%last)
+            nullify(self%tail)
         end if
     end if
     val = old%val
@@ -621,12 +621,12 @@ elemental subroutine _PROC(self, val)
     type(_ITEM), pointer :: item, old
 
     nullify(old)
-    item => self%first
+    item => self%head
     if (associated(item)) then
         if (_EQ(item%val,val)) then
             old => item
             nullify(item)
-            self%first => old%next
+            self%head => old%next
         else
             do while (associated(item%next))
                 if (_EQ(item%next%val,val)) then
@@ -639,7 +639,7 @@ elemental subroutine _PROC(self, val)
         end if
     end if
     if (associated(old)) then
-        if (.not. associated(old%next)) self%last => item
+        if (.not. associated(old%next)) self%tail => item
         deallocate(old)
         self%size = self%size - 1
     else
@@ -653,18 +653,18 @@ end subroutine _PROC
 subroutine _PROC(self)
     class(_LIST), intent(inout) :: self
 
-    type(_ITEM), pointer :: item, next, first
+    type(_ITEM), pointer :: item, next, head
 
-    item => self%first
-    self%last => item
-    nullify(first)
+    item => self%head
+    self%tail => item
+    nullify(head)
     do while (associated(item))
         next => item%next
-        item%next => first
-        first => item
+        item%next => head
+        head => item
         item => next
     end do
-    self%first => first
+    self%head => head
 end subroutine _PROC
 #undef _PROC
 
@@ -674,16 +674,16 @@ subroutine _PROC(self)
     class(_LIST), intent(inout) :: self
 
     integer :: size, sorted_size, size1, size2, num, i
-    type(_ITEM), target :: zeroth
-    type(_ITEM), pointer :: last, item1, item2, item
+    type(_ITEM), target :: sentinel
+    type(_ITEM), pointer :: tail, item1, item2, item
 
     size = self%size
-    zeroth%next => self%first
-    last => self%last
+    sentinel%next => self%head
+    tail => self%tail
     sorted_size = 1
     do while (sorted_size < size)
-        last => zeroth
-        item1 => zeroth%next
+        tail => sentinel
+        item1 => sentinel%next
         num = size
         do while (num > 0)
             size1 = min(sorted_size, num)
@@ -696,18 +696,18 @@ subroutine _PROC(self)
             num = num - size2
             do
                 if (size2 == 0) then
-                    last%next => item1
+                    tail%next => item1
                     do i = 1, size1
-                        last => last%next
+                        tail => tail%next
                     end do
                     item1 => item2
                     exit
                 else if (size1 == 0) then
-                    last%next => item2
+                    tail%next => item2
                     do i = 1, size2
-                        last => last%next
+                        tail => tail%next
                     end do
-                    item1 => last%next
+                    item1 => tail%next
                     exit
                 end if
                 if (_LE(item1%val,item2%val)) then
@@ -719,15 +719,15 @@ subroutine _PROC(self)
                     item2 => item2%next
                     size2 = size2 - 1
                 end if
-                last%next => item
-                last => item
+                tail%next => item
+                tail => item
             end do
         end do
-        nullify(last%next)
+        nullify(tail%next)
         sorted_size = sorted_size * 2
     end do
-    self%first => zeroth%next
-    self%last => last
+    self%head => sentinel%next
+    self%tail => tail
 end subroutine _PROC
 #undef _PROC
 
@@ -754,13 +754,13 @@ subroutine _PROC(self, other)
     if (n > 0) then
         allocate(new)
         new%val = other(1)
-        self%first => new
+        self%head => new
         do i = 2, n
             allocate(new%next)
             new => new%next
             new%val = other(i)
         end do
-        self%last => new
+        self%tail => new
         self%size = self%size
     end if
 end subroutine _PROC
@@ -790,7 +790,7 @@ subroutine _PROC(self, other)
 #else
     allocate(self(n))
 #endif
-    item => other%first
+    item => other%head
     do i = 1, n
         self(i) = item%val
         item => item%next
@@ -818,7 +818,7 @@ function _PROC(self) result(res)
     type(_ITEM), pointer :: item
 
     res = .true.
-    item => self%first
+    item => self%head
     do while (associated(item))
         if (.not. item%val) then
             res = .false.
@@ -838,7 +838,7 @@ function _PROC(self) result(res)
     type(_ITEM), pointer :: item
 
     res = .false.
-    item => self%first
+    item => self%head
     do while (associated(item))
         if (item%val) then
             res = .true.
@@ -860,7 +860,7 @@ function _PROC(self) result(res)
     type(_ITEM), pointer :: item
 
     res = 0
-    item => self%first
+    item => self%head
     do while (associated(item))
         length = len(item%val)
         if (res < length) res = length
@@ -918,7 +918,7 @@ subroutine _PROC(self, other)
     class(_ITER), intent(out) :: self
     class(_LIST), intent(in) :: other
 
-    self%item => other%first
+    self%item => other%head
 end subroutine _PROC
 #undef _PROC
 
