@@ -677,6 +677,7 @@ subroutine _PROC(self)
     type(_ITEM), target :: sentinel
     type(_ITEM), pointer :: tail, item1, item2, item
 
+#if _TYPE_ID != _COMPLEX
     size = self%size
     sentinel%next => self%head
     tail => self%tail
@@ -728,6 +729,10 @@ subroutine _PROC(self)
     end do
     self%head => sentinel%next
     self%tail => tail
+#else
+    if (self%size > 1) error stop "'<' not supported between instances of" &
+        // " 'complex' and 'complex'"  ! TypeError
+#endif
 end subroutine _PROC
 #undef _PROC
 

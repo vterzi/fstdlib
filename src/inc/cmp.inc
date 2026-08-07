@@ -14,15 +14,8 @@
 #else
 #  define _EQ(X,Y) ((X) == (Y))
 #  define _NE(X,Y) ((X) /= (Y))
-#  if _TYPE_ID == _COMPLEX
-#    define _LT(X,Y) (abs(X) < abs(Y))
-#    define _LE(X,Y) (abs(X) <= abs(Y))
-#    define _GT(X,Y) (abs(X) > abs(Y))
-#    define _GE(X,Y) (abs(X) >= abs(Y))
-#  else
-#    define _LT(X,Y) ((X) < (Y))
-#    define _LE(X,Y) ((X) <= (Y))
-#    define _GT(X,Y) ((X) > (Y))
-#    define _GE(X,Y) ((X) >= (Y))
-#  endif
+#  define _LT(X,Y) ((X) < (Y))
+#  define _LE(X,Y) ((X) <= (Y))
+#  define _GT(X,Y) ((X) > (Y))
+#  define _GE(X,Y) ((X) >= (Y))
 #endif
