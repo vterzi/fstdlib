@@ -3,6 +3,8 @@
 
 
 module pytran_builtins
+    use pytran_conversion, only: character
+
     implicit none
 
     private
@@ -40,6 +42,22 @@ module pytran_builtins
 #undef _TYPE_IDS
 #undef _PROC
 
+    public :: operator(//)
+#define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
+#define _PROC _CAT3(SA,_OP,_LABEL)
+#define _IFACE operator(//)
+#define _NO_PUBLIC
+#define _OP cat
+#include "../inc/iface.inc"
+#undef _PROC
+#define _PROC _CAT3(_LABEL,_OP,SA)
+#define _IFACE operator(//)
+#define _NO_PUBLIC
+#define _OP cat
+#include "../inc/iface.inc"
+#undef _PROC
+#undef _TYPE_IDS
+
 contains
 
 #define _TYPE_IDS1 _LOGICAL
@@ -55,6 +73,12 @@ contains
 #include "../inc/types.inc"
 #undef _FILE
 #define _FILE "../builtins/swap.inc"
+#include "../inc/types.inc"
+#undef _FILE
+#undef _TYPE_IDS
+
+#define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
+#define _FILE "../builtins/cat.inc"
 #include "../inc/types.inc"
 #undef _FILE
 #undef _TYPE_IDS
