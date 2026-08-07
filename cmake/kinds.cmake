@@ -4,6 +4,7 @@ try_run(run_result compile_result
     RUN_OUTPUT_VARIABLE output
 )
 
+add_compile_definitions("_MAX_RANK=${MAX_RANK}")
 if("${run_result}" EQUAL 0)
     set(compile_definitions "")
     set(max_kind "0")
@@ -28,7 +29,15 @@ if("${run_result}" EQUAL 0)
     endwhile()
     add_compile_definitions("_KIND_BITS=${kind_bits}")
     add_compile_definitions("_TYPE_BITS=5")
-    add_compile_definitions("_DIM_BITS=3")
+    set(rank_bits 0)
+    while(TRUE)
+        math(EXPR temp "1 << ${rank_bits}")
+        if("${temp}" GREATER "${MAX_RANK}")
+            break()
+        endif()
+        math(EXPR rank_bits "${rank_bits} + 1")
+    endwhile()
+    add_compile_definitions("_RANK_BITS=${rank_bits}")
 else()
     message(FATAL_ERROR
         "Failed to determine available kinds of basic data types"

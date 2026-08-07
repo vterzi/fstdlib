@@ -11,6 +11,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 set(CMAKE_Fortran_MODULE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 
+set(MAX_RANK 7 CACHE STRING "Maximum supported array rank")
+if(NOT "${MAX_RANK}" MATCHES "^[0-9]+$")
+    message(FATAL_ERROR "MAX_RANK is not an unsigned integer")
+endif()
+if("${MAX_RANK}" GREATER 15)
+    message(FATAL_ERROR "MAX_RANK is greater than 15")
+endif()
+
 include(cmake/kinds.cmake)
 include(cmake/props.cmake)
 
