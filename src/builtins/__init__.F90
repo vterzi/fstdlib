@@ -43,20 +43,30 @@ module pytran_builtins
 #undef _PROC
 
     public :: operator(//)
-#define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
-#define _PROC _CAT3(SA,_OP,_LABEL)
+#define _PROC _BINARY_OP(_OP)
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
 #define _IFACE operator(//)
 #define _NO_PUBLIC
 #define _OP cat
 #include "../inc/iface.inc"
-#undef _PROC
-#define _PROC _CAT3(_LABEL,_OP,SA)
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
+#define _TYPE_IDS1 (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
+#define _TYPE_IDS2 _CHARACTER
 #define _IFACE operator(//)
 #define _NO_PUBLIC
 #define _OP cat
 #include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
 #undef _PROC
-#undef _TYPE_IDS
+#if defined(_ASCII) && defined(_UCS4)
+    interface operator(//)
+        module procedure :: SA_cat_SU
+        module procedure :: SU_cat_SA
+    end interface operator(//)
+#endif
 
 contains
 
@@ -77,10 +87,32 @@ contains
 #undef _FILE
 #undef _TYPE_IDS
 
-#define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
 #define _FILE "../builtins/cat.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
+
+
+#if defined(_ASCII) && defined(_UCS4)
+    pure function SA_cat_SU(arg1, arg2) result(res)
+        character(len=*, kind=_ASCII), intent(in) :: arg1
+        character(len=*, kind=_UCS4), intent(in) :: arg2
+        character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
+
+        res = character(arg1, kind=res) // arg2
+    end function SA_cat_SU
+
+
+    pure function SU_cat_SA(arg1, arg2) result(res)
+        character(len=*, kind=_UCS4), intent(in) :: arg1
+        character(len=*, kind=_ASCII), intent(in) :: arg2
+        character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
+
+        res = arg1 // character(arg2, kind=res)
+    end function SU_cat_SA
+#endif
 
 end module pytran_builtins
