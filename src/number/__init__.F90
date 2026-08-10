@@ -11,8 +11,8 @@ module pytran_number
 
     private
 
-    ! REAL_?P_DEC_DIGITS = ceiling(digits(0._?P) * log10(2._?P))
-    ! REAL_?P_EXP_WIDTH = ceiling(log10(log10(huge(0._?P))))
+    ! REAL_?P_DEC_DIGITS = ceiling(digits(0e0_?P) * log10(2e0_?P))
+    ! REAL_?P_EXP_WIDTH = ceiling(log10(log10(huge(0e0_?P))))
 #ifdef _HP
     integer, parameter, public :: &
         REAL_HP_DEC_DIGITS = 4, &
@@ -21,7 +21,7 @@ module pytran_number
         REAL_HP_INF = _REAL_HP_INF, &
         REAL_HP_NAN = _REAL_HP_NAN
     real(HP), parameter :: REAL_HP_DEC_POWERS(-9:5) = [ &
-        0._hp, tiny(0._hp) * epsilon(0._hp), &
+        0e0_hp, tiny(0e0_hp) * epsilon(0e0_hp), &
         1e-7_hp, 1e-6_hp, 1e-5_hp, 1e-4_hp, 1e-3_hp, 1e-2_hp, 1e-1_hp, &
         1e0_hp, 1e1_hp, 1e2_hp, 1e3_hp, 1e4_hp, &
         _REAL_HP_INF &
@@ -35,7 +35,7 @@ module pytran_number
         REAL_SP_INF = _REAL_SP_INF, &
         REAL_SP_NAN = _REAL_SP_NAN
     real(SP), parameter :: REAL_SP_DEC_POWERS(-46:39) = [ &
-        0._sp, tiny(0._sp) * epsilon(0._sp), &
+        0e0_sp, tiny(0e0_sp) * epsilon(0e0_sp), &
         1e-44_sp, 1e-43_sp, 1e-42_sp, 1e-41_sp, 1e-40_sp, 1e-39_sp, 1e-38_sp, &
         1e-37_sp, 1e-36_sp, 1e-35_sp, 1e-34_sp, 1e-33_sp, 1e-32_sp, 1e-31_sp, &
         1e-30_sp, 1e-29_sp, 1e-28_sp, 1e-27_sp, 1e-26_sp, 1e-25_sp, 1e-24_sp, &
@@ -59,7 +59,7 @@ module pytran_number
         REAL_DP_INF = _REAL_DP_INF, &
         REAL_DP_NAN = _REAL_DP_NAN
     real(DP), parameter :: REAL_DP_DEC_POWERS(-325:309) = [ &
-        0._dp, tiny(0._dp) * epsilon(0._dp), &
+        0e0_dp, tiny(0e0_dp) * epsilon(0e0_dp), &
         1e-323_dp, 1e-322_dp, 1e-321_dp, 1e-320_dp, 1e-319_dp, 1e-318_dp, &
         1e-317_dp, 1e-316_dp, 1e-315_dp, 1e-314_dp, 1e-313_dp, 1e-312_dp, &
         1e-311_dp, 1e-310_dp, 1e-309_dp, 1e-308_dp, 1e-307_dp, 1e-306_dp, &
@@ -167,7 +167,7 @@ module pytran_number
         REAL_XDP_INF = _REAL_XDP_INF, &
         REAL_XDP_NAN = _REAL_XDP_NAN
     real(XDP), parameter :: REAL_XDP_DEC_POWERS1(*) = [ &
-        0._xdp, tiny(0._xdp) * epsilon(0._xdp), &
+        0e0_xdp, tiny(0e0_xdp) * epsilon(0e0_xdp), &
         1e-4950_xdp, 1e-4949_xdp, 1e-4948_xdp, 1e-4947_xdp, 1e-4946_xdp, &
         1e-4945_xdp, 1e-4944_xdp, 1e-4943_xdp, 1e-4942_xdp, 1e-4941_xdp, &
         1e-4940_xdp, 1e-4939_xdp, 1e-4938_xdp, 1e-4937_xdp, 1e-4936_xdp, &
@@ -2141,7 +2141,7 @@ module pytran_number
         REAL_QP_INF = _REAL_QP_INF, &
         REAL_QP_NAN = _REAL_QP_NAN
     real(QP), parameter :: REAL_QP_DEC_POWERS1(*) = [ &
-        0._qp, tiny(0._qp) * epsilon(0._qp), &
+        0e0_qp, tiny(0e0_qp) * epsilon(0e0_qp), &
         1e-4965_qp, 1e-4964_qp, 1e-4963_qp, 1e-4962_qp, 1e-4961_qp, &
         1e-4960_qp, 1e-4959_qp, 1e-4958_qp, 1e-4957_qp, 1e-4956_qp, &
         1e-4955_qp, 1e-4954_qp, 1e-4953_qp, 1e-4952_qp, 1e-4951_qp, &

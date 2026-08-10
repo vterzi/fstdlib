@@ -26,13 +26,13 @@ if("${run_result}" EQUAL 0)
                 string(REGEX REPLACE "${min_int}" "-huge(0)-1" list "${list}")
                 string(REGEX REPLACE "[ \n]+" "," list "${list}")
                 add_compile_definitions(
-                    "_${item}_INF=transfer([${list}],0.${kind})"
+                    "_${item}_INF=transfer([${list}],0e0${kind})"
                 )
                 string(STRIP "${nan_list}" list)
                 string(REGEX REPLACE "${min_int}" "-huge(0)-1" list "${list}")
                 string(REGEX REPLACE "[ \n]+" "," list "${list}")
                 add_compile_definitions(
-                    "_${item}_NAN=transfer([${list}],0.${kind})"
+                    "_${item}_NAN=transfer([${list}],0e0${kind})"
                 )
             endif()
         endif()
