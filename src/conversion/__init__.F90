@@ -75,7 +75,6 @@ module pytran_conversion
         COMPLEX_EXTRA_WIDTH = 3
 
 #define _PROC _UNARY_OP(_OP)
-
 #define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX)
 #define _OP bin
 #include "../inc/iface.inc"
@@ -84,12 +83,15 @@ module pytran_conversion
 #define _OP hex
 #include "../inc/iface.inc"
 #undef _TYPE_IDS
+#undef _PROC
 
-#define _TYPE_IDS (_LOGICAL | _INTEGER | _REAL | _COMPLEX | _CHARACTER)
+#define _PROC _CAT3(_OP,_KIND_LABEL1,_LABEL2)
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 (_LOGICAL | _INTEGER | _REAL | _COMPLEX | _CHARACTER)
 #define _OP character
 #include "../inc/iface.inc"
-#undef _TYPE_IDS
-
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
 #undef _PROC
 
 contains
@@ -100,34 +102,32 @@ contains
 #undef _FILE
 #undef _TYPE_IDS
 
-#define _TYPE_IDS _LOGICAL
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 _LOGICAL
 #define _FILE "../conversion/character_l.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
-
-#define _TYPE_IDS _INTEGER
+#undef _TYPE_IDS2
+#define _TYPE_IDS2 _INTEGER
 #define _FILE "../conversion/character_i.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
-
-#define _TYPE_IDS _REAL
+#undef _TYPE_IDS2
+#define _TYPE_IDS2 _REAL
 #define _FILE "../conversion/character_r.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
-
-#define _TYPE_IDS _COMPLEX
+#undef _TYPE_IDS2
+#define _TYPE_IDS2 _COMPLEX
 #define _FILE "../conversion/character_c.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
-
-#define _TYPE_IDS _CHARACTER
+#undef _TYPE_IDS2
+#define _TYPE_IDS2 _CHARACTER
 #define _FILE "../conversion/character_s.inc"
 #include "../inc/types.inc"
 #undef _FILE
-#undef _TYPE_IDS
+#undef _TYPE_IDS2
+#undef _TYPE_IDS1
 
 end module pytran_conversion

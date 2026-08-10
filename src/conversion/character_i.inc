@@ -1,14 +1,19 @@
-#define _PROC _UNARY_OP(character)
-pure function _PROC(arg, width, minimum, sign) result(res)
-    _TYPE(_KIND), intent(in) :: arg
+#define _PROC _CAT3(character,_KIND_LABEL1,_LABEL2)
+pure function _PROC(arg, kind, width, minimum, sign) result(res)
+    _TYPE2(_KIND2), intent(in) :: arg
+#if _KIND1 == _DEFAULT_KIND1
+    character(len=*, kind=_KIND1), intent(in), optional :: kind
+#else
+    character(len=*, kind=_KIND1), intent(in) :: kind
+#endif
     integer, intent(in), optional :: width, minimum
     logical, intent(in), optional :: sign
-    character(len=:), allocatable :: res
+    character(len=:, kind=_KIND1), allocatable :: res
 
     logical :: present_width, present_minimum, present_sign, sign_
     integer :: width_
     character(len=:), allocatable :: fmt
-    character(len=_CAT3(MAX_LEN_INTEGER,_KIND_LABEL,STR)) :: buf
+    character(len=_CAT3(MAX_LEN_INTEGER,_KIND_LABEL2,STR), kind=_KIND1) :: buf
 
     present_width = present(width)
     present_minimum = present(minimum)
@@ -32,7 +37,7 @@ pure function _PROC(arg, width, minimum, sign) result(res)
             fmt // "." // str(min(max(minimum, 0), width_)) &
         )
         fmt = fmt // ")"
-        allocate(character(len=width_) :: res)
+        allocate(character(len=width_, kind=_KIND1) :: res)
         write(res, fmt) arg
     else
         write(buf, *) arg

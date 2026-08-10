@@ -1,16 +1,23 @@
-#define _PROC _UNARY_OP(character)
-pure function _PROC(arg, mode, width, decimals, expwidth, sign) result(res)
-    _TYPE(_KIND), intent(in) :: arg
+#define _PROC _CAT3(character,_KIND_LABEL1,_LABEL2)
+pure function _PROC( &
+    arg, kind, mode, width, decimals, expwidth, sign &
+) result(res)
+    _TYPE2(_KIND2), intent(in) :: arg
+#if _KIND1 == _DEFAULT_KIND1
+    character(len=*, kind=_KIND1), intent(in), optional :: kind
+#else
+    character(len=*, kind=_KIND1), intent(in) :: kind
+#endif
     integer, intent(in), optional :: mode, width, decimals, expwidth
     logical, intent(in), optional :: sign
-    character(len=:), allocatable :: res
+    character(len=:, kind=_KIND1), allocatable :: res
 
     logical :: present_mode, present_width, present_decimals, &
         present_expwidth, present_sign, sign_
     integer :: mode_, decimals_, expwidth_, width_real, width_imag
-    real(_KIND) :: real_part, imag_part
+    real(_KIND2) :: real_part, imag_part
     character(len=:), allocatable :: fmt, fmt_real, fmt_imag
-    character(len=_CAT3(MAX_LEN_COMPLEX,_KIND_LABEL,STR)) :: buf
+    character(len=_CAT3(MAX_LEN_COMPLEX,_KIND_LABEL2,STR), kind=_KIND1) :: buf
 
     present_mode = present(mode)
     present_width = present(width)
@@ -78,12 +85,12 @@ pure function _PROC(arg, mode, width, decimals, expwidth, sign) result(res)
         if (present_decimals) then
             decimals_ = max(0, decimals)
         else
-            decimals_ = _CAT3(REAL,_KIND_LABEL,DEC_DIGITS)
+            decimals_ = _CAT3(REAL,_KIND_LABEL2,DEC_DIGITS)
         end if
         if (present_expwidth) then
             expwidth_ = max(1, expwidth)
         else
-            expwidth_ = _CAT3(REAL,_KIND_LABEL,EXP_WIDTH)
+            expwidth_ = _CAT3(REAL,_KIND_LABEL2,EXP_WIDTH)
         end if
         if (present_width) then
             width_real = max(1, width)
@@ -108,7 +115,7 @@ pure function _PROC(arg, mode, width, decimals, expwidth, sign) result(res)
         fmt = fmt // ")"
         allocate(character(len=( &
             width_real + width_imag + COMPLEX_EXTRA_WIDTH &
-        )) :: res)
+        ), kind=_KIND1) :: res)
         write(res, fmt) arg
     else
         write(buf, *) arg
