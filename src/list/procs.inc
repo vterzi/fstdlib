@@ -791,7 +791,7 @@ subroutine _PROC(self, other)
 
     n = size(other)
 #if _TYPE_ID == _CHARACTER
-    allocate(character(len=len(other)) :: self(n))
+    allocate(character(len=len(other), kind=_KIND) :: self(n))
 #else
     allocate(self(n))
 #endif
