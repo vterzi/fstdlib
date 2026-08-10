@@ -1,3 +1,4 @@
+#undef _RANK_LABEL2
 #define _RANK2 0
 #define _RANK_LABEL2
 #include "../inc/type1.inc"
