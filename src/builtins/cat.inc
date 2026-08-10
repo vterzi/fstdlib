@@ -1,11 +1,8 @@
-#include "../inc/var.inc"
-
-
 #define _PROC _CAT3(_LABEL1,cat,_LABEL2)
 pure function _PROC(arg1, arg2) result(res)
-    _ARG_TYPE1, intent(in) :: arg1
-    _ARG_TYPE2, intent(in) :: arg2
-    _RES_TYPE1 :: res
+    character(len=*, kind=_KIND1), intent(in) :: arg1
+    _TYPE2(_KIND2), intent(in) :: arg2
+    character(len=:, kind=_KIND1), allocatable :: res
 
     res = arg1 // character(arg2, kind=res)
 end function _PROC
@@ -14,9 +11,9 @@ end function _PROC
 
 #define _PROC _CAT3(_LABEL2,cat,_LABEL1)
 pure function _PROC(arg1, arg2) result(res)
-    _ARG_TYPE2, intent(in) :: arg1
-    _ARG_TYPE1, intent(in) :: arg2
-    _RES_TYPE1 :: res
+    _TYPE2(_KIND2), intent(in) :: arg1
+    character(len=*, kind=_KIND1), intent(in) :: arg2
+    character(len=:, kind=_KIND1), allocatable :: res
 
     res = character(arg1, kind=res) // arg2
 end function _PROC
