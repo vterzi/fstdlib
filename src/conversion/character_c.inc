@@ -113,9 +113,7 @@ pure function _PROC( &
         end if
         fmt = fmt // "'('," // fmt_real // "','," // fmt_imag // "')'"
         fmt = fmt // ")"
-        allocate(character(len=( &
-            width_real + width_imag + COMPLEX_EXTRA_WIDTH &
-        ), kind=_KIND1) :: res)
+        call alloc(res, width_real + width_imag + COMPLEX_EXTRA_WIDTH)
         write(res, fmt) arg
     else
         write(buf, *) arg

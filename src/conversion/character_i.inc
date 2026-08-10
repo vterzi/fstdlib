@@ -37,7 +37,7 @@ pure function _PROC(arg, kind, width, minimum, sign) result(res)
             fmt // "." // str(min(max(minimum, 0), width_)) &
         )
         fmt = fmt // ")"
-        allocate(character(len=width_, kind=_KIND1) :: res)
+        call alloc(res, width_)
         write(res, fmt) arg
     else
         write(buf, *) arg

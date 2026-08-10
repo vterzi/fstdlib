@@ -14,7 +14,7 @@ pure function _PROC(arg, kind, width) result(res)
 
     if (present(width)) then
         width_ = max(0, width)
-        allocate(character(len=width_, kind=_KIND1) :: res)
+        call alloc(res, width_)
         write(res, "(l" // str(width_) // ")") arg
     else
         write(buf, *) arg
