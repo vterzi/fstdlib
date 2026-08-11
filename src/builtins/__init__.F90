@@ -65,13 +65,16 @@ module pytran_builtins
 #include "../inc/iface.inc"
 #undef _TYPE_IDS1
 #undef _TYPE_IDS2
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 _CHARACTER
+#define _IFACE operator(//)
+#define _NO_PUBLIC
+#define _SKIP_SAME
+#define _OP cat
+#include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
 #undef _PROC
-#if defined(_ASCII) && defined(_UCS4)
-    interface operator(//)
-        module procedure :: SA_cat_SU
-        module procedure :: SU_cat_SA
-    end interface operator(//)
-#endif
 
 contains
 
@@ -100,24 +103,14 @@ contains
 #undef _TYPE_IDS1
 #undef _TYPE_IDS2
 
-
-#if defined(_ASCII) && defined(_UCS4)
-    pure function SA_cat_SU(arg1, arg2) result(res)
-        character(len=*, kind=_ASCII), intent(in) :: arg1
-        character(len=*, kind=_UCS4), intent(in) :: arg2
-        character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
-
-        res = character(arg1, mold=res) // arg2
-    end function SA_cat_SU
-
-
-    pure function SU_cat_SA(arg1, arg2) result(res)
-        character(len=*, kind=_UCS4), intent(in) :: arg1
-        character(len=*, kind=_ASCII), intent(in) :: arg2
-        character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
-
-        res = arg1 // character(arg2, mold=res)
-    end function SU_cat_SA
-#endif
+#define _TYPE_IDS1 _CHARACTER
+#define _TYPE_IDS2 _CHARACTER
+#define _FILE "../inc/skipsame.inc"
+#define _SUBFILE "../builtins/s_cat_s.inc"
+#include "../inc/types.inc"
+#undef _SUBFILE
+#undef _FILE
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
 
 end module pytran_builtins
