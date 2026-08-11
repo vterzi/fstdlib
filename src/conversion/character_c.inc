@@ -1,12 +1,12 @@
 #define _PROC _CAT3(character,_KIND_LABEL1,_LABEL2)
 pure function _PROC( &
-    arg, kind, mode, width, decimals, expwidth, sign &
+    arg, mold, mode, width, decimals, expwidth, sign &
 ) result(res)
     _TYPE2(_KIND2), intent(in) :: arg
 #if _KIND1 == _DEFAULT_KIND1
-    character(len=*, kind=_KIND1), intent(in), optional :: kind
+    character(len=*, kind=_KIND1), intent(in), optional :: mold
 #else
-    character(len=*, kind=_KIND1), intent(in) :: kind
+    character(len=*, kind=_KIND1), intent(in) :: mold
 #endif
     integer, intent(in), optional :: mode, width, decimals, expwidth
     logical, intent(in), optional :: sign
