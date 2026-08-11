@@ -14,19 +14,24 @@ module pytran_builtins
         True = .true.
 
 #define _PROC _BINARY_OP(_OP)
-#define _IFACE operator(._OP.)
 #define _TYPE_IDS1 _LOGICAL
 #define _TYPE_IDS2 _LOGICAL
+#define _IFACE operator(._OP.)
 #define _OP eq
 #include "../inc/iface.inc"
+#define _IFACE operator(._OP.)
 #define _OP ne
 #include "../inc/iface.inc"
+#define _IFACE operator(._OP.)
 #define _OP lt
 #include "../inc/iface.inc"
+#define _IFACE operator(._OP.)
 #define _OP le
 #include "../inc/iface.inc"
+#define _IFACE operator(._OP.)
 #define _OP gt
 #include "../inc/iface.inc"
+#define _IFACE operator(._OP.)
 #define _OP ge
 #include "../inc/iface.inc"
 #undef _TYPE_IDS1
