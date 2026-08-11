@@ -85,7 +85,7 @@ module pytran_conversion
 #undef _TYPE_IDS
 #undef _PROC
 
-#define _PROC _CAT3(_OP,_KIND_LABEL1,_LABEL2)
+#define _PROC _CAT3(_TYPE1,_KIND_LABEL1,_LABEL2)
 
 #define _TYPE_IDS2 _CHARACTER
 #define _TYPE_IDS1 _LOGICAL

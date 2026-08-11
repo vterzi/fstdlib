@@ -1,4 +1,4 @@
-#define _PROC _CAT3(character,_KIND_LABEL1,_LABEL2)
+#define _PROC _CAT3(_TYPE1,_KIND_LABEL1,_LABEL2)
 pure function _PROC( &
     arg, mold, mode, width, decimals, expwidth, sign &
 ) result(res)
