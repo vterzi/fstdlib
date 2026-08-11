@@ -102,7 +102,7 @@ contains
         character(len=*, kind=_UCS4), intent(in) :: arg2
         character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
 
-        res = character(arg1, kind=res) // arg2
+        res = character(arg1, mold=res) // arg2
     end function SA_cat_SU
 
 
@@ -111,7 +111,7 @@ contains
         character(len=*, kind=_ASCII), intent(in) :: arg2
         character(len=(len(arg1) + len(arg2)), kind=_UCS4) :: res
 
-        res = arg1 // character(arg2, kind=res)
+        res = arg1 // character(arg2, mold=res)
     end function SU_cat_SA
 #endif
 
