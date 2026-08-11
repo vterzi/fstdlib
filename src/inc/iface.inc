@@ -5,9 +5,16 @@
 public :: _IFACE
 #endif
 interface _IFACE
-#define _FILE "../inc/decl.inc"
+#ifdef _SKIP_SAME
+#  undef _SKIP_SAME
+#  define _FILE "../inc/skipsame.inc"
+#  define _SUBFILE "../inc/decl.inc"
+#else
+#  define _FILE "../inc/decl.inc"
+#endif
 #include "../inc/types.inc"
 #undef _FILE
+#undef _SUBFILE
 end interface _IFACE
 #undef _IFACE
 #undef _OP
