@@ -86,12 +86,33 @@ module pytran_conversion
 #undef _PROC
 
 #define _PROC _CAT3(_OP,_KIND_LABEL1,_LABEL2)
+
+#define _TYPE_IDS2 _CHARACTER
+#define _TYPE_IDS1 _LOGICAL
+#define _OP logical
+#include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _INTEGER
+#define _OP integer
+#include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _REAL
+#define _OP real
+#include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _COMPLEX
+#define _OP complex
+#include "../inc/iface.inc"
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
+
 #define _TYPE_IDS1 _CHARACTER
 #define _TYPE_IDS2 (_LOGICAL | _INTEGER | _REAL | _COMPLEX | _CHARACTER)
 #define _OP character
 #include "../inc/iface.inc"
 #undef _TYPE_IDS1
 #undef _TYPE_IDS2
+
 #undef _PROC
 
 contains
@@ -101,6 +122,23 @@ contains
 #include "../inc/types.inc"
 #undef _FILE
 #undef _TYPE_IDS
+
+#define _FILE "../conversion/type.inc"
+#define _TYPE_IDS2 _CHARACTER
+#define _TYPE_IDS1 _LOGICAL
+#include "../inc/types.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _INTEGER
+#include "../inc/types.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _REAL
+#include "../inc/types.inc"
+#undef _TYPE_IDS1
+#define _TYPE_IDS1 _COMPLEX
+#include "../inc/types.inc"
+#undef _TYPE_IDS1
+#undef _TYPE_IDS2
+#undef _FILE
 
 #define _TYPE_IDS1 _CHARACTER
 #define _TYPE_IDS2 _LOGICAL
