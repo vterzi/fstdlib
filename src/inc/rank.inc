@@ -1,4 +1,3 @@
-#undef _RANK_LABEL
 #define _RANK 0
 #define _RANK_LABEL
 #include "../inc/type.inc"
