@@ -83,7 +83,7 @@ pure function _PROC( &
         fmt = fmt // str(width_) // "." // str(decimals_)
         if (present_expwidth) fmt = fmt // "e" // str(expwidth_)
         fmt = fmt // ")"
-        call alloc(res, width_)
+        allocate(character(len=width_, kind=_KIND1) :: res)
         write(res, fmt) arg
     else
         write(buf, *) arg
